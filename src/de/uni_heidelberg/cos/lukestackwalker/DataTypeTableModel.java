@@ -19,7 +19,6 @@
 
 package de.uni_heidelberg.cos.lukestackwalker;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,22 +42,13 @@ public class DataTypeTableModel extends AbstractTableModel {
 	};
 	private static DefaultComboBoxModel<String> presetComboBoxModel = new DefaultComboBoxModel<String>();
 	private int currentPresetIdx = 0;
-	private static final File presetsDir = new File("presets");
 	private List<DataTypeModelPreset> presets = new ArrayList<DataTypeModelPreset>();
 
 
 	public DataTypeTableModel() {
-		
 		addPreset(new DataTypeModelPreset("", new ArrayList<DataType>()));
-		for (File file : presetsDir.listFiles()) {
-			System.out.println(file.getName());
-			if (!file.isFile() || !file.getName().endsWith(".txt"))
-				continue;
-			String name = file.getName().replace(".txt", "");
-			DataTypeModelPreset preset = DataTypeModelPreset.read(name, file);
-			if (preset != null)
-				addPreset(preset);
-		}
+		for (DataTypeModelPreset preset : DataTypeModelPreset.read())
+			addPreset(preset);
 	}
 	
 	
