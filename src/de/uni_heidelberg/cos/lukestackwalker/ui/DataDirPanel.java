@@ -65,8 +65,9 @@ public class DataDirPanel extends JPanel implements ActionListener {
 		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			File path = chooser.getSelectedFile();
 			boolean recursive = false;
-			DataDir dataDir = new DataDir(path, recursive);
-			dataDirTableModel.addRow(dataDir);
+			DataDir dataDir = DataDir.make(path, recursive);
+			if (dataDir != null)
+				dataDirTableModel.addRow(dataDir);
 		}
 	}
 	

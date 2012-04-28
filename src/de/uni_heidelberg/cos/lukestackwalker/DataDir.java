@@ -32,17 +32,26 @@ public class DataDir {
 	private File path;
 	private boolean isRecursive;
 	
+
+	/**
+	 * Returns a new DataDir or null if path is not a folder or an unreadable location.
+	 * @param path {@link File} instance holding the path to a folder containing data files
+	 * @param isRecursive whether or not to include subfolders of path
+	 * @return a new DataDir
+	 */
+	public static DataDir make(File path, boolean isRecursive) {
+		if (!path.isDirectory() || !path.canRead())
+			return null;
+		return new DataDir(path, isRecursive);
+	}
+	
 	
 	/** 
 	 * Creates a new {@link DataDir}.
 	 * @param path {@link File} instance holding the path to a folder containing data files
 	 * @param isRecursive whether or not to include subfolders of path
 	 */
-	/*
-	 * TODO remodel this to a factory style approach where null is returned in case e.g. path doesn't exist.
-	 * Non-issue currently, since DataDirs are generated with the aid of JFileChooser, but would be a bit cleaner and safer.
-	 */
-	public DataDir(File path, boolean isRecursive) {
+	private DataDir(File path, boolean isRecursive) {
 		setPath(path);
 		setRecursive(isRecursive);
 	}
