@@ -1,8 +1,8 @@
 /*
- * This file is part of Luke Stackwalker
+ * This file is part of Luke Stackwalker.
  * https://github.com/bhoeckendorf/luke-stackwalker
  * 
- * Copyright 2012 Burkhard Höckendorf <b.hoeckendorf at web dot de>
+ * Copyright 2012 Burkhard Hoeckendorf <b.hoeckendorf at web dot de>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
