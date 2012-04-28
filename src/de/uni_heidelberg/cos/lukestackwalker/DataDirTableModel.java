@@ -53,21 +53,13 @@ public class DataDirTableModel extends AbstractTableModel {
 	/**
 	 * Adds a new row (a {@link DataDir}) to the table model.
 	 * 
-	 * Opens a {@link JFileChooser} to allow the user to point at the folder to be added.
+	 * Always appends the new row to the end of the table model (the bottom of the table).
 	 * Called from the UI's {@link DataDirPanel}.
 	 */
-	// TODO the JFileChooser really belongs to the UI
-	public void addRow() {
-		JFileChooser chooser = new JFileChooser();
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			File path = chooser.getSelectedFile();
-			boolean recursive = false;
-			DataDir dir = new DataDir(path, recursive);
-			dataDirs.add(dir);
-			final int lastRowIdx = getRowCount() - 1;
-			fireTableRowsInserted(lastRowIdx, lastRowIdx);
-		}
+	public void addRow(DataDir dataDir) {
+		dataDirs.add(dataDir);
+		final int lastRowIdx = getRowCount() - 1;
+		fireTableRowsInserted(lastRowIdx, lastRowIdx);
 	}
 	
 

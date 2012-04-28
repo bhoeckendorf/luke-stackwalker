@@ -21,14 +21,17 @@ package de.uni_heidelberg.cos.lukestackwalker.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import net.miginfocom.swing.MigLayout;
+import de.uni_heidelberg.cos.lukestackwalker.DataDir;
 import de.uni_heidelberg.cos.lukestackwalker.DataDirTableModel;
 
 
@@ -56,12 +59,23 @@ public class DataDirPanel extends JPanel implements ActionListener {
 	}
 
 	
+	private void addDataDir() {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			File path = chooser.getSelectedFile();
+			boolean recursive = false;
+			DataDir dataDir = new DataDir(path, recursive);
+			dataDirTableModel.addRow(dataDir);
+		}
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton source = (JButton)event.getSource();
-		if (source == addDataDirButton) {
-			dataDirTableModel.addRow();
-		}
+		if (source == addDataDirButton)
+			addDataDir();
 		else if (source == removeDataDirButton) {
 			int rowIdxs[] = dataDirTable.getSelectedRows();
 			for (int rowIdx : rowIdxs)

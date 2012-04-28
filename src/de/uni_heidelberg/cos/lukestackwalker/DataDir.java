@@ -38,6 +38,10 @@ public class DataDir {
 	 * @param path {@link File} instance holding the path to a folder containing data files
 	 * @param isRecursive whether or not to include subfolders of path
 	 */
+	/*
+	 * TODO remodel this to a factory style approach where null is returned in case e.g. path doesn't exist.
+	 * Non-issue currently, since DataDirs are generated with the aid of JFileChooser, but would be a bit cleaner and safer.
+	 */
 	public DataDir(File path, boolean isRecursive) {
 		setPath(path);
 		setRecursive(isRecursive);
