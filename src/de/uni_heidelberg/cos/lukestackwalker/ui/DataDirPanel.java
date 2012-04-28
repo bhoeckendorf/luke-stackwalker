@@ -26,6 +26,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -66,8 +67,14 @@ public class DataDirPanel extends JPanel implements ActionListener {
 			File path = chooser.getSelectedFile();
 			boolean recursive = false;
 			DataDir dataDir = DataDir.make(path, recursive);
-			if (dataDir != null)
-				dataDirTableModel.addRow(dataDir);
+			if (dataDir == null) {
+				JOptionPane.showMessageDialog(this,
+						"The location is not a folder, does not exist or can not be read from:\n" + path.getAbsolutePath(),
+						"Invalid folder",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			dataDirTableModel.addRow(dataDir);
 		}
 	}
 	
