@@ -55,19 +55,6 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	public void update() {
 		clear();
 		getDataFiles();
-		String[] foo = {
-				"DS0SPC0TL1CHN0PLN0PH0.tif",
-				"DS0SPC0TL0CHN0PLN0PH0.tif",
-				"DS0SPC0TL0CHN0PLN1PH0.tif",
-				"DS1SPC0TL0CHN0PLN0PH0.tif"
-		};
-		String dataDir = "/home/burkhard/tiffs/";
-		for (String f : foo) {
-			File file = new File(dataDir + f);
-			boolean recursive = false;
-			DataFile dataFile = new DataFile(dataDir, recursive, file);
-			add(dataFile);
-		}
 //		List<DataSetTreeModelNode> cs = rootNode.getChildrenList();
 //		for (DataSetTreeModelNode c : cs) {
 //			System.out.println(c.toString());
@@ -172,8 +159,9 @@ public class DataSetTreeModel extends DefaultTreeModel {
 		}
 		for(File file: dir.listFiles()) {
 			if(isTiffFile(file)) {
-				DataFile dataFile = new DataFile(dirPath, false, file);
-				add(dataFile);
+				DataFile dataFile = DataFile.make(dirPath, false, file);
+				if (dataFile != null)
+					add(dataFile);
 			}
 		}
 	}
@@ -189,8 +177,9 @@ public class DataSetTreeModel extends DefaultTreeModel {
 				getDataFilesRecursively(dataDir, file);
 			} else {
 				if(isTiffFile(file)) {
-					DataFile dataFile = new DataFile(dataDir, true, file);
-					add(dataFile);
+					DataFile dataFile = DataFile.make(dataDir, true, file);
+					if (dataFile != null)
+						add(dataFile);
 				}
 			}
 		}

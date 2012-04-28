@@ -38,8 +38,16 @@ public class DataFile {
 	private boolean isValid = true;
 	private final File file;
 	
+
+	public static DataFile make(String dataDir, boolean isRecursive, File file) {
+		DataFile dataFile = new DataFile(dataDir, isRecursive, file);
+		if (!dataFile.isValid)
+			return null;
+		return dataFile;
+	}
 	
-	public DataFile(String dataDir, boolean isRecursive, File file) {
+	
+	private DataFile(String dataDir, boolean isRecursive, File file) {
 		this.dataDir = dataDir;
 		this.isRecursive = isRecursive;
 		this.file = file;
