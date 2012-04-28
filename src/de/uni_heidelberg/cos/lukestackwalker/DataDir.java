@@ -22,33 +22,59 @@ package de.uni_heidelberg.cos.lukestackwalker;
 import java.io.File;
 
 
+/**
+ * This class holds the path to a folder containing data files and the information whether or not that includes its subfolders.
+ * {@see DataDirTableModel}
+ * {@see DataDirPanel}
+ */
 public class DataDir {
 
 	private File path;
 	private boolean isRecursive;
 	
 	
+	/** 
+	 * Creates a new {@link DataDir}.
+	 * @param path {@link File} instance holding the path to a folder containing data files
+	 * @param isRecursive whether or not to include subfolders of path
+	 */
 	public DataDir(File path, boolean isRecursive) {
 		setPath(path);
 		setRecursive(isRecursive);
 	}
 	
 	
+	/**
+	 * Returns the path to the data folder.
+	 * @return {@link File} instance holding the path to the data folder
+	 */
 	public File getPath() {
 		return path;
 	}
 	
 	
+	/**
+	 * Sets the path to the data folder.
+	 * @param path {@link File} instance holding the path to the data folder
+	 */
 	public void setPath(File path) {
 		this.path = path;
 	}
 	
 	
+	/**
+	 * Whether or not subfolders of the data folder are included.
+	 * @return whether or not subfolders of the data folder are included
+	 */
 	public boolean isRecursive() {
 		return isRecursive;
 	}
 	
 	
+	/**
+	 * Sets whether or not to include subfolders of the data folder.
+	 * @param isRecursive whether or not to include subfolders of the data folder
+	 */
 	public void setRecursive(boolean isRecursive) {
 		this.isRecursive = isRecursive;
 	}

@@ -27,17 +27,36 @@ import javax.swing.JFileChooser;
 import javax.swing.table.AbstractTableModel;
 
 
+/**
+ * Model underlying the {@link DataDirTable}.
+ */
 public class DataDirTableModel extends AbstractTableModel {
 
-	private static List<DataDir> dataDirs = new ArrayList<DataDir>();
+	/**
+	 * List of {@link DataDir} that are contained in the model,
+	 * also serves as the model's data structure.
+	 */
+	private static final List<DataDir> dataDirs = new ArrayList<DataDir>();
+
 	private final String[] columnHeaders = {"Path", "Recursive?"};
 	
-	
+
+	/**
+	 * Returns a list of {@link DataDir}s currently held by the model.
+	 * @return a list of {@link DataDir}s currently held by the model
+	 */
 	public static List<DataDir> getDataDirs() {
 		return dataDirs;
 	}
 	
-	
+
+	/**
+	 * Adds a new row (a {@link DataDir}) to the table model.
+	 * 
+	 * Opens a {@link JFileChooser} to allow the user to point at the folder to be added.
+	 * Called from the UI's {@link DataDirPanel}.
+	 */
+	// TODO the JFileChooser really belongs to the UI
 	public void addRow() {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -46,13 +65,19 @@ public class DataDirTableModel extends AbstractTableModel {
 			boolean recursive = false;
 			DataDir dir = new DataDir(path, recursive);
 			dataDirs.add(dir);
-			int lastRowIdx = getRowCount() - 1;
+			final int lastRowIdx = getRowCount() - 1;
 			fireTableRowsInserted(lastRowIdx, lastRowIdx);
 		}
 	}
 	
-	
-	public void removeRow(int rowIdx) {
+
+	/**
+	 * Removes a row (a {@link DataDir}) from the table model.
+	 * 
+	 * Called from the UI's {@link DataDirPanel}.
+	 * @param rowIdx the {@link DataDir}'s row index
+	 */
+	public void removeRow(final int rowIdx) {
 		dataDirs.remove(rowIdx);
 		fireTableRowsDeleted(rowIdx, rowIdx);
 	}
@@ -65,13 +90,13 @@ public class DataDirTableModel extends AbstractTableModel {
 	
 	
 	@Override
-	public String getColumnName(int colIdx) {
+	public String getColumnName(final int colIdx) {
 		return columnHeaders[colIdx];
 	}
 	
 	
 	@Override
-	public Class<?> getColumnClass(int colIdx) {
+	public Class<?> getColumnClass(final int colIdx) {
 		return getValueAt(0, colIdx).getClass();
 	}
 	
@@ -83,7 +108,7 @@ public class DataDirTableModel extends AbstractTableModel {
 
 
 	@Override
-	public Object getValueAt(int rowIdx, int colIdx) {
+	public Object getValueAt(final int rowIdx, final int colIdx) {
 		DataDir dir = dataDirs.get(rowIdx);
 		switch (colIdx) {
 		case 0:
@@ -98,13 +123,13 @@ public class DataDirTableModel extends AbstractTableModel {
 	
 
 	@Override
-	public boolean isCellEditable(int rowIdx, int colIdx) {
+	public boolean isCellEditable(final int rowIdx, final int colIdx) {
 		return true;
 	}
 	
 	
 	@Override
-	public void setValueAt(Object value, int rowIdx, int colIdx) {
+	public void setValueAt(Object value, final int rowIdx, final int colIdx) {
 		DataDir dir = dataDirs.get(rowIdx);
 		switch (colIdx) {
 		case 0:

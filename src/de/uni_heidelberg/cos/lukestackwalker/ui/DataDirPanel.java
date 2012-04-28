@@ -32,9 +32,14 @@ import net.miginfocom.swing.MigLayout;
 import de.uni_heidelberg.cos.lukestackwalker.DataDirTableModel;
 
 
+/**
+ * UI element that allows choosing data folders and specifying whether or not subfolders should be included.
+ * 
+ * Uses a {@link DataDirTableModel} instance as data model of a {@link JTable}.
+ */
 public class DataDirPanel extends JPanel implements ActionListener {
 	
-	private DataDirTableModel dataDirTableModel = new DataDirTableModel();
+	private DataDirTableModel dataDirTableModel;
 	private JTable dataDirTable;
 	private JButton
 		addDataDirButton,
@@ -42,6 +47,7 @@ public class DataDirPanel extends JPanel implements ActionListener {
 
 
 	public DataDirPanel() {
+		dataDirTableModel = new DataDirTableModel();
 		initUi();
 		dataDirTable.setModel(dataDirTableModel);
 		dataDirTable.doLayout();
