@@ -23,19 +23,22 @@ import java.io.File;
 
 
 /**
- * This class holds the path to a folder containing data files and the information whether or not that includes its subfolders.
+ * This class holds the path to a data folder and the information whether or not its subfolders should be included recursively.
  * {@see DataDirTableModel}
  * {@see DataDirPanel}
  */
 public class DataDir {
 
+	/** the path to a data folder */
 	private File path;
+	
+	/** whether or not to include subfolders recursively */
 	private boolean isRecursive;
 	
 
 	/**
-	 * Returns a new DataDir or null if path is not a folder or an unreadable location.
-	 * @param path {@link File} instance holding the path to a folder containing data files
+	 * Returns a new DataDir or {@code null} if path is not a folder or an unreadable location.
+	 * @param path the path to a data folder
 	 * @param isRecursive whether or not to include subfolders of path
 	 * @return a new DataDir
 	 */
@@ -47,8 +50,8 @@ public class DataDir {
 	
 	
 	/** 
-	 * Creates a new {@link DataDir}.
-	 * @param path {@link File} instance holding the path to a folder containing data files
+	 * Creates a new DataDir. Is used via {@link #make(File, boolean)}.
+	 * @param path the path to a data folder
 	 * @param isRecursive whether or not to include subfolders of path
 	 */
 	private DataDir(File path, boolean isRecursive) {
@@ -59,7 +62,7 @@ public class DataDir {
 	
 	/**
 	 * Returns the path to the data folder.
-	 * @return {@link File} instance holding the path to the data folder
+	 * @return the path to the data folder
 	 */
 	public File getPath() {
 		return path;
@@ -68,7 +71,7 @@ public class DataDir {
 	
 	/**
 	 * Sets the path to the data folder.
-	 * @param path {@link File} instance holding the path to the data folder
+	 * @param path the path to the data folder
 	 */
 	public void setPath(File path) {
 		this.path = path;

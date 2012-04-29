@@ -28,7 +28,7 @@ import javax.swing.table.AbstractTableModel;
 
 
 /**
- * Model underlying the {@link DataDirTable}.
+ * Model underlying the main JTable in {@link DataDirPanel}.
  */
 public class DataDirTableModel extends AbstractTableModel {
 
@@ -43,7 +43,7 @@ public class DataDirTableModel extends AbstractTableModel {
 
 	/**
 	 * Returns a list of {@link DataDir}s currently held by the model.
-	 * @return a list of {@link DataDir}s currently held by the model
+	 * @return a list of DataDirs currently held by the model
 	 */
 	public static List<DataDir> getDataDirs() {
 		return dataDirs;
@@ -52,7 +52,6 @@ public class DataDirTableModel extends AbstractTableModel {
 
 	/**
 	 * Adds a new row (a {@link DataDir}) to the table model.
-	 * 
 	 * Always appends the new row to the end of the table model (the bottom of the table).
 	 * Called from the UI's {@link DataDirPanel}.
 	 */
@@ -65,9 +64,8 @@ public class DataDirTableModel extends AbstractTableModel {
 
 	/**
 	 * Removes a row (a {@link DataDir}) from the table model.
-	 * 
 	 * Called from the UI's {@link DataDirPanel}.
-	 * @param rowIdx the {@link DataDir}'s row index
+	 * @param rowIdx the DataDir's row index
 	 */
 	public void removeRow(final int rowIdx) {
 		dataDirs.remove(rowIdx);

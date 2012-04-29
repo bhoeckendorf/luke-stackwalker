@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Holds the information associated with a data file. Its location, DataTypes and values.
+ */
 public class DataFile {
 	
 	private final Map<String, Integer> fileNameTagValues;
@@ -39,6 +42,14 @@ public class DataFile {
 	private final File file;
 	
 
+	/**
+	 * Returns a new DataFile instance. 
+	 * @param dataDir
+	 * @param isRecursive
+	 * @param file
+	 * @return
+	 */
+	// TODO use a reference to the respective DataDir instance
 	public static DataFile make(String dataDir, boolean isRecursive, File file) {
 		DataFile dataFile = new DataFile(dataDir, isRecursive, file);
 		if (!dataFile.isValid)
@@ -46,7 +57,15 @@ public class DataFile {
 		return dataFile;
 	}
 	
-	
+
+	/**
+	 * Constructs a new DataFile. Is private and to be used via {@link DataFile#make(String, boolean, File)}.
+	 * @param dataDir 
+	 * @param isRecursive
+	 * @param file 
+	 * @see #make(String, boolean, File)
+	 */
+	// TODO use a reference to the respective DataDir object instead of these String/boolean fields
 	private DataFile(String dataDir, boolean isRecursive, File file) {
 		this.dataDir = dataDir;
 		this.isRecursive = isRecursive;
@@ -68,50 +87,93 @@ public class DataFile {
 		dataSetName = comparableFileName.split(firstFileNameTag)[0];
 
 		fileNameTagValues = getFileNameTagValues(comparableFileName);
+		if (fileNameTagValues.isEmpty())
+			isValid = false;
 	}
 
-	
+
+	// TODO get rid of this method if possible, else document it
 	public boolean isValid() {
 		return isValid;
 	}
 	
 	
+	/**
+	 * Returns the file's path.
+	 * @return the file's path
+	 * @see #getFileName()
+	 */
 	public String getFilePath() {
 		return absoluteFilePath;
 	}
 	
 	
+	/**
+	 * Returns the file name.
+	 * @return the file name
+	 * @see #getFilePath()
+	 */
 	public String getFileName() {
 		return file.getName();
 	}
 	
-	
+
+	/**
+	 * Returns the name of the data set that a DataFile instance belongs to.
+	 * @return the name of the data set that a DataFile instance belongs to
+	 */
 	public String getDataSetName() {
 		return dataSetName;
 	}
 	
 	
-	public int getDataTypeValue(String dataTypeName) {
+	/**
+	 * Returns the value of a {@link DataType} (by name) in a DataFile's file name, or {@code null}.
+	 * Example: file name = footag123bar, {@link DataType#getFileNameTag()} = tag, return = 123 
+	 * @param dataTypeName a DataType's file name tag ({@link DataType#getFileNameTag()})
+	 * @return the value of a DataType (by name) in a DataFile's file name, or {@code null}
+	 * @see #getDataTypeValue(int)
+	 * @see DataType
+	 * @see DataTypeTableModel
+	 */
+	public int getDataTypeValue(final String dataTypeName) {
 		return fileNameTagValues.get(dataTypeName);
 	}
 	
-	
-	public int getDataTypeValue(int dataTypeLevel) {
-		String dataTypeName = DataTypeTableModel.getDataTypeName(true, dataTypeLevel); 
+
+	/**
+	 * Returns the value of the nth {@link DataType} from {@link DataTypeTableModel} in this DataFile's file name, or {@code null}.
+	 * Example: file name = footag123bar, {@link DataType#getFileNameTag()} = tag, return = 123 
+	 * The index n (= dataTypeLevel) considers only activated data types.
+	 * @param dataTypeLevel nth activated DataType in DataTypeTableModel (starting at 0)
+	 * @return the value of the nth DataType from DataTypeTableModel in this DataFile's file name, or {@code null}
+	 * @see #getDataTypeValue(String)
+	 * @see DataType
+	 * @see DataTypeTableModel
+	 */
+	public int getDataTypeValue(final int dataTypeLevel) {
+		final String dataTypeName = DataTypeTableModel.getDataTypeName(true, dataTypeLevel); 
 		return getDataTypeValue(dataTypeName);
 	}
 	
 
-	private Map<String, Integer> getFileNameTagValues(String comparableFileName) {
+	/**
+	 * Returns a key-value Map of {@link DataType}s and their respective values in comparableFileName.
+	 * If this method runs into trouble, it returns an empty Map. 
+	 * @param comparableFileName the subject
+	 * @return key-value Map, keys: {@link DataType#getName()}, values: {@link #getValueOfTag(String, String)}
+	 * @see DataType
+	 */
+	private Map<String, Integer> getFileNameTagValues(final String comparableFileName) {
 		Map<String, Integer> values = new HashMap<String, Integer>();
-		final List<DataType> dataTypes = DataTypeTableModel.getDataTypes(true);
+		List<DataType> dataTypes = DataTypeTableModel.getDataTypes(true);
 		for (DataType dataType : dataTypes) {
 			String dataTypeName = dataType.getName();
 			String fileNameTag = dataType.getFileNameTag();
-			int value = getValueOfTag(comparableFileName, fileNameTag);
+			final int value = getValueOfTag(comparableFileName, fileNameTag);
 			values.put(dataTypeName, value);
 			if (value == -1) {
-				isValid = false;
+				values.clear();
 				break;
 			}
 		}
@@ -119,28 +181,24 @@ public class DataFile {
 	}
 
 
-	private int getValueOfTag(String comparableFileName, String fileNameTag) {
+	/**
+	 * Finds fileNameTag in comparableFileName, and returns any number of digits downstream as {@code int}, which it returns.
+	 * Example: comparableFileName = footag123bar, fileNameTag = tag, return = 123 
+	 * @param comparableFileName the subject
+	 * @param fileNameTag the query
+	 * @return the {@code int} in comparableFileNameTag downstream of fileNameTag, or -1 if there is no such thing
+	 */
+	private int getValueOfTag(final String comparableFileName, final String fileNameTag) {
 		String[] parts = comparableFileName.split(fileNameTag);
 		if(parts.length != 2)
 			return -1;
-		String string = parts[1];
 
-//		first implementation. less code, but probably slower than the implementation below?
-//		int value = -1;
-//		for(int i=1; i<string.length(); i++) {
-//			try {
-//				value = Integer.parseInt(string.substring(0, i));
-//			}
-//			catch(NumberFormatException e) {
-//				return value;
-//			}
-//		}
-		
+		final String string = parts[1];
 		char[] chars = string.toCharArray();
 		int i = 0;
 		for (char c : chars) {
 			if (Character.isDigit(c))
-				i++;
+				++i;
 			else
 				break;
 		}
