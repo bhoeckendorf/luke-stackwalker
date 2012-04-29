@@ -23,8 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFileChooser;
 import javax.swing.table.AbstractTableModel;
+
+import de.uni_heidelberg.cos.lukestackwalker.ui.DataDirPanel;
 
 
 /**

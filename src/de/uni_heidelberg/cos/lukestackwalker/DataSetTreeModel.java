@@ -19,11 +19,8 @@
 
 package de.uni_heidelberg.cos.lukestackwalker;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
