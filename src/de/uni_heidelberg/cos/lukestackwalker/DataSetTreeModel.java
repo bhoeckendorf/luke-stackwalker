@@ -124,54 +124,13 @@ public class DataSetTreeModel extends DefaultTreeModel {
 		// TODO stub	
 	}
 
-	
+
 	private void getDataFiles() {
-		final List<DataDir> dataDirs = DataDirTableModel.getDataDirs();
-		for (DataDir dataDir : dataDirs) {
-			if (dataDir.isRecursive())
-				getDataFilesRecursively(dataDir, dataDir.getPath());
-			else
-				getDataFilesNonrecursively(dataDir);
-		}
-	}
-	
-	
-	// List absolute paths to files in dir, nonrecursively.
-	private void getDataFilesNonrecursively(final DataDir dataDir) {
-		for(File file: dataDir.getPath().listFiles()) {
-			if(isTiffFile(file)) {
-				DataFile dataFile = DataFile.make(dataDir, file);
-				if (dataFile != null)
-					add(dataFile);
-			}
-		}
+		for (DataDir dataDir : DataDirTableModel.getDataDirs())
+			dataDir.addDataFilesToModel(this);
 	}
 
-	
-	// List absolute paths to files in dir, recursively.
-	private void getDataFilesRecursively(final DataDir dataDir, File currentDir) {
-		System.out.println("Looking for TIFF files in " + currentDir.toString());
-		for (File file : currentDir.listFiles()) {
-			if(file.isDirectory())
-				getDataFilesRecursively(dataDir, file);
-			else {
-				if(isTiffFile(file)) {
-					DataFile dataFile = DataFile.make(dataDir, file);
-					if (dataFile != null)
-						add(dataFile);
-				}
-			}
-		}
-	}
-	
 
-	// TODO check FileFilter and FilenameFilter instead
-	private boolean isTiffFile(File file) {
-		String fileName = file.getName();
-		return fileName.endsWith(".tif") || fileName.endsWith(".tiff") || fileName.endsWith(".TIF") || fileName.endsWith(".TIFF");
-	}
-	
-	
 	public String getDebugString() {
 		String indent = "  ";
 		String debug = new String();

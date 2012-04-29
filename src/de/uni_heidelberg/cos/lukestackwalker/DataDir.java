@@ -95,4 +95,74 @@ public class DataDir {
 		this.isRecursive = isRecursive;
 	}
 	
+
+	/**
+	 * Adds the valid {@link DataFile}s contained in this DataDir (and its
+	 * subfolders, if {@link #isRecursive()}) to the {@link DataSetTreeModel}
+	 * {@code model}.
+	 * @param model the target DataSetTreeModel
+	 */
+	/*
+	 * There is no getDataFiles() method, because that would generate a long list
+	 * of DataFiles, just to add them to the long list of DataFiles in the DataSetTreeModel.
+	 * Instead, we're going to add to the latter list right away.
+	 */
+	public void addDataFilesToModel(final DataSetTreeModel model) {
+		if (isRecursive)
+			addDataFilesToModelRecursively(model, path);
+		else
+			addDataFilesToModelNonrecursively(model);
+	}
+	
+
+	/**
+	 * Adds the valid {@link DataFile}s contained in this DataDir (and its
+	 * subfolders, if {@link #isRecursive()}) to the {@link DataSetTreeModel}
+	 * {@code model}.
+	 * Is called from {@link #addDataFilesToModel(DataSetTreeModel)} is this DataDir
+	 * instance is not recursive.
+	 * @param model the target DataSetModel
+	 */
+	private void addDataFilesToModelNonrecursively(final DataSetTreeModel model) {
+		for(File file : path.listFiles()) {
+			if(isTiffFile(file)) {
+				DataFile dataFile = DataFile.make(this, file);
+				if (dataFile != null)
+					model.add(dataFile);
+			}
+		}
+	}
+
+	
+	/**
+	 * Adds the valid {@link DataFile}s contained in this DataDir (and its
+	 * subfolders, if {@link #isRecursive()}) to the {@link DataSetTreeModel}
+	 * {@code model}.
+	 * Is called from {@link #addDataFilesToModel(DataSetTreeModel)} is this DataDir
+	 * instance is recursive.
+	 * @param model the target DataSetModel
+	 * @param currentSubDir the current subfolder, is called for every subfolder to find all files.
+	 */
+	private void addDataFilesToModelRecursively(final DataSetTreeModel model, final File currentSubDir) {
+		System.out.println("Looking for TIFF files in " + currentSubDir.toString());
+		for (File file : currentSubDir.listFiles()) {
+			if(file.isDirectory())
+				addDataFilesToModelRecursively(model, file);
+			else {
+				if(isTiffFile(file)) {
+					DataFile dataFile = DataFile.make(this, file);
+					if (dataFile != null)
+						model.add(dataFile);
+				}
+			}
+		}
+	}
+	
+	
+	// TODO check FileFilter and FilenameFilter instead
+	private boolean isTiffFile(File file) {
+		String fileName = file.getName();
+		return fileName.endsWith(".tif") || fileName.endsWith(".tiff") || fileName.endsWith(".TIF") || fileName.endsWith(".TIFF");
+	}
+
 }
