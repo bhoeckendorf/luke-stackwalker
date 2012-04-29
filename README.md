@@ -8,7 +8,7 @@ channel, volume ...
 
 ----------
 
-Luke Stackwalker is an open source project hosted at GitHub.  
+Luke Stackwalker is an open source project hosted on GitHub.  
 https://github.com/bhoeckendorf/luke-stackwalker
 
 It is licensed under the Apache License, Version 2.0.  
