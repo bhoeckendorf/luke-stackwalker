@@ -30,7 +30,6 @@ public class DataType implements ChangeListener {
 		name = "",
 		fileNameTag = "";
 	private boolean
-		optional = false,
 		active = true,
 		rangeActive = false;
 	private SpinnerNumberModel
@@ -75,16 +74,6 @@ public class DataType implements ChangeListener {
 	
 	public String getName() {
 		return name;
-	}
-	
-	
-	public void setOptional(boolean state) {
-		optional = state;
-	}
-	
-	
-	public boolean isOptional() {
-		return optional;
 	}
 	
 	

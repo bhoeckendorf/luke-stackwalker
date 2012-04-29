@@ -79,17 +79,15 @@ public class DataTypeModelPreset {
 	
 	private static DataType getDataType(final String input) {
 		String[] parts = input.split(delimiter);
-		if (parts.length != 4)
+		if (parts.length != 3)
 			return null;
 		String name = parts[0].trim();
 		String tag = parts[1].trim();
-		boolean optional = Boolean.parseBoolean(parts[2].trim());
-		boolean active = Boolean.parseBoolean(parts[3].trim());
+		boolean active = Boolean.parseBoolean(parts[2].trim());
 		
 		DataType dataType = new DataType();
 		dataType.setName(name);
 		dataType.setFileNameTag(tag);
-		dataType.setOptional(optional);
 		dataType.setActive(active);
 		return dataType;
 	}
