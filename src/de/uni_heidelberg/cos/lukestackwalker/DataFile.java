@@ -31,27 +31,23 @@ import java.util.Map;
  */
 public class DataFile {
 	
+	private final DataDir dataDir; // TODO maybe not needed?
 	private final Map<String, Integer> fileNameTagValues;
 	private final String
 		absoluteFilePath,
-		dataDir,
 		dataSetName;
-	private final boolean
-		isRecursive;
-	private boolean isValid = true;
+	private boolean isValid = true; // TODO remove if possible
 	private final File file;
 	
 
 	/**
 	 * Returns a new DataFile instance. 
-	 * @param dataDir
-	 * @param isRecursive
-	 * @param file
-	 * @return
+	 * @param dataDir the data folder
+	 * @param file the data file
+	 * @return a new DataFile instance, or {@code null} file is non-existent or doesn't contain all file name tags the activated {@link DataType}s in {@link DataTypeTableModel}).
 	 */
-	// TODO use a reference to the respective DataDir instance
-	public static DataFile make(String dataDir, boolean isRecursive, File file) {
-		DataFile dataFile = new DataFile(dataDir, isRecursive, file);
+	public static DataFile make(final DataDir dataDir, final File file) {
+		DataFile dataFile = new DataFile(dataDir, file);
 		if (!dataFile.isValid)
 			return null;
 		return dataFile;
@@ -60,28 +56,26 @@ public class DataFile {
 
 	/**
 	 * Constructs a new DataFile. Is private and to be used via {@link DataFile#make(String, boolean, File)}.
-	 * @param dataDir 
-	 * @param isRecursive
-	 * @param file 
+	 * @param dataDir the data folder
+	 * @param file the data file
 	 * @see #make(String, boolean, File)
 	 */
-	// TODO use a reference to the respective DataDir object instead of these String/boolean fields
-	private DataFile(String dataDir, boolean isRecursive, File file) {
+	private DataFile(final DataDir dataDir, final File file) {
 		this.dataDir = dataDir;
-		this.isRecursive = isRecursive;
 		this.file = file;
 		
-		String filePath = new String();
+		String filePath = "";
 		try {
 			filePath = this.file.getCanonicalPath();
 		} catch (IOException e) {
+//			TODO deal with this more gracefully
 			System.out.println("In constructor for DataFile:");
 			e.printStackTrace();
 			System.exit(1);
 		}
 		absoluteFilePath = filePath;
 		
-		String comparableFileName = absoluteFilePath.replace(dataDir, "").substring(1);//.replace(File.separator, "");
+		String comparableFileName = absoluteFilePath.replace(dataDir.getPath().toString(), "").substring(1);//.replace(File.separator, "");
 		DataType firstDataType = DataTypeTableModel.getDataTypeOfLevel(true, 0);
 		String firstFileNameTag = firstDataType.getFileNameTag();
 		dataSetName = comparableFileName.split(firstFileNameTag)[0];
@@ -92,12 +86,6 @@ public class DataFile {
 	}
 
 
-	// TODO get rid of this method if possible, else document it
-	public boolean isValid() {
-		return isValid;
-	}
-	
-	
 	/**
 	 * Returns the file's path.
 	 * @return the file's path

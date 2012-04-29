@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -41,8 +42,6 @@ public class DataSetTreeModel extends DefaultTreeModel {
 
 	
 	public void add(DataFile dataFile) {
-		if (!dataFile.isValid())
-			return;
 		DataSetTreeModelNode currentParent = rootNode.add(new DataSetTreeModelNode(rootNode, dataFile.getDataSetName()));
 		for (int dataTypeLevel = 0; dataTypeLevel < DataTypeTableModel.getDataTypeCount(true); dataTypeLevel++) {
 			int instanceIndex = dataFile.getDataTypeValue(dataTypeLevel);
@@ -128,38 +127,20 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	
 	private void getDataFiles() {
 		final List<DataDir> dataDirs = DataDirTableModel.getDataDirs();
-		for (DataDir dataDir : dataDirs)
-			getDataFiles(dataDir);
-	}
-	
-	
-	private void getDataFiles(DataDir dataDir) {
-		if (dataDir.isRecursive()) {
-			String mainDir = new String();
-			try {
-				mainDir = dataDir.getPath().getCanonicalPath();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}				
-			getDataFilesRecursively(mainDir, dataDir.getPath());
+		for (DataDir dataDir : dataDirs) {
+			if (dataDir.isRecursive())
+				getDataFilesRecursively(dataDir, dataDir.getPath());
+			else
+				getDataFilesNonrecursively(dataDir);
 		}
-		getDataFilesNonrecursively(dataDir.getPath());
 	}
 	
 	
 	// List absolute paths to files in dir, nonrecursively.
-	private void getDataFilesNonrecursively(File dir) {
-		String dirPath = new String();
-		try {
-			dirPath = dir.getCanonicalPath();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		for(File file: dir.listFiles()) {
+	private void getDataFilesNonrecursively(final DataDir dataDir) {
+		for(File file: dataDir.getPath().listFiles()) {
 			if(isTiffFile(file)) {
-				DataFile dataFile = DataFile.make(dirPath, false, file);
+				DataFile dataFile = DataFile.make(dataDir, file);
 				if (dataFile != null)
 					add(dataFile);
 			}
@@ -168,16 +149,14 @@ public class DataSetTreeModel extends DefaultTreeModel {
 
 	
 	// List absolute paths to files in dir, recursively.
-	private void getDataFilesRecursively(String dataDir, File currentDir) {
+	private void getDataFilesRecursively(final DataDir dataDir, File currentDir) {
 		System.out.println("Looking for TIFF files in " + currentDir.toString());
-		String[] subPaths = currentDir.list();
-		for(String subPath: subPaths) {
-			File file = new File(currentDir, subPath);
-			if(file.isDirectory()) {
+		for (File file : currentDir.listFiles()) {
+			if(file.isDirectory())
 				getDataFilesRecursively(dataDir, file);
-			} else {
+			else {
 				if(isTiffFile(file)) {
-					DataFile dataFile = DataFile.make(dataDir, true, file);
+					DataFile dataFile = DataFile.make(dataDir, file);
 					if (dataFile != null)
 						add(dataFile);
 				}
@@ -185,7 +164,8 @@ public class DataSetTreeModel extends DefaultTreeModel {
 		}
 	}
 	
-	
+
+	// TODO check FileFilter and FilenameFilter instead
 	private boolean isTiffFile(File file) {
 		String fileName = file.getName();
 		return fileName.endsWith(".tif") || fileName.endsWith(".tiff") || fileName.endsWith(".TIF") || fileName.endsWith(".TIFF");
