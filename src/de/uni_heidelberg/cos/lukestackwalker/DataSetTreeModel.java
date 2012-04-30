@@ -80,7 +80,7 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	 */
 	private void populate() {
 		for (DataDir dataDir : DataDirTableModel.getDataDirs())
-			dataDir.addDataFilesToModel(this);
+			dataDir.insertDataFilesIntoModel(this);
 	}
 
 

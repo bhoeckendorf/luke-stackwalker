@@ -20,12 +20,12 @@
 package de.uni_heidelberg.cos.lukestackwalker;
 
 import java.io.File;
+import java.io.FileFilter;
 
 
 /**
- * This class holds the path to a data folder and the information whether or not its subfolders should be included recursively.
- * {@see DataDirTableModel}
- * {@see DataDirPanel}
+ * Holds the path to a data folder and retrieves the {@link DataFile}s
+ * contained within, recursively if desired.
  */
 public class DataDir {
 
@@ -37,7 +37,9 @@ public class DataDir {
 	
 
 	/**
-	 * Returns a new DataDir or {@code null} if path is not a folder or an unreadable location.
+	 * Returns a new DataDir or {@code null} if path is not a folder
+	 * or an unreadable location.
+	 * 
 	 * @param path the path to a data folder
 	 * @param isRecursive whether or not to include subfolders of path
 	 * @return a new DataDir
@@ -51,6 +53,7 @@ public class DataDir {
 	
 	/** 
 	 * Creates a new DataDir. Is used via {@link #make(File, boolean)}.
+	 * 
 	 * @param path the path to a data folder
 	 * @param isRecursive whether or not to include subfolders of path
 	 */
@@ -62,6 +65,7 @@ public class DataDir {
 	
 	/**
 	 * Returns the path to the data folder.
+	 * 
 	 * @return the path to the data folder
 	 */
 	public File getPath() {
@@ -71,6 +75,7 @@ public class DataDir {
 	
 	/**
 	 * Sets the path to the data folder.
+	 * 
 	 * @param path the path to the data folder
 	 */
 	public void setPath(File path) {
@@ -79,8 +84,9 @@ public class DataDir {
 	
 	
 	/**
-	 * Whether or not subfolders of the data folder are included.
-	 * @return whether or not subfolders of the data folder are included
+	 * Whether or not to include subfolders recursively.
+	 * 
+	 * @return whether or not to include subfolders recursively
 	 */
 	public boolean isRecursive() {
 		return isRecursive;
@@ -88,8 +94,9 @@ public class DataDir {
 	
 	
 	/**
-	 * Sets whether or not to include subfolders of the data folder.
-	 * @param isRecursive whether or not to include subfolders of the data folder
+	 * Sets whether or not to include subfolders recursively.
+	 * 
+	 * @param isRecursive whether or not to include subfolders recursively
 	 */
 	public void setRecursive(boolean isRecursive) {
 		this.isRecursive = isRecursive;
@@ -97,59 +104,61 @@ public class DataDir {
 	
 
 	/**
-	 * Adds the valid {@link DataFile}s contained in this DataDir (and its
-	 * subfolders, if {@link #isRecursive()}) to the {@link DataSetTreeModel}
+	 * Inserts the valid {@link DataFile}s contained in this DataDir (and its
+	 * subfolders, if {@link #isRecursive()}) into the {@link DataSetTreeModel}
 	 * {@code model}.
-	 * @param model the target DataSetTreeModel
+	 * 
+	 * @param model the target {@code DataSetTreeModel}
 	 */
 	/*
 	 * There is no getDataFiles() method, because that would generate a long list
-	 * of DataFiles, just to add them to the long list of DataFiles in the DataSetTreeModel.
-	 * Instead, we're going to add to the latter list right away.
+	 * of DataFiles, just to insert them to the long list of DataFiles in the
+	 * DataSetTreeModel. Instead, we're going to add to the latter list right away.
 	 */
-	public void addDataFilesToModel(final DataSetTreeModel model) {
+	public void insertDataFilesIntoModel(final DataSetTreeModel model) {
 		if (isRecursive)
-			addDataFilesToModelRecursively(model, path);
+			insertDataFilesIntoModelRecursively(model, path);
 		else
-			addDataFilesToModelNonrecursively(model);
+			insertDataFilesIntoModelNonRecursively(model);
 	}
 	
 
 	/**
-	 * Adds the valid {@link DataFile}s contained in this DataDir (and its
-	 * subfolders, if {@link #isRecursive()}) to the {@link DataSetTreeModel}
+	 * Inserts the valid {@link DataFile}s contained in this DataDir (and its
+	 * subfolders, if {@link #isRecursive()}) into the {@link DataSetTreeModel}
 	 * {@code model}.
-	 * Is called from {@link #addDataFilesToModel(DataSetTreeModel)} is this DataDir
-	 * instance is not recursive.
-	 * @param model the target DataSetModel
+	 * Non-recursive version, called by {@link #insertDataFilesIntoModel(DataSetTreeModel)}. 
+	 * 
+	 * @param model the target {@code DataSetTreeModel}
 	 */
-	private void addDataFilesToModelNonrecursively(final DataSetTreeModel model) {
-		for(File file : path.listFiles()) {
-			if(isTiffFile(file)) {
-				DataFile dataFile = DataFile.make(this, file);
-				if (dataFile != null)
-					model.add(dataFile);
-			}
+	private void insertDataFilesIntoModelNonRecursively(final DataSetTreeModel model) {
+		DataFileFilter filter = new DataFileFilter();
+		for(File file : path.listFiles(filter)) {
+			DataFile dataFile = DataFile.make(this, file);
+			if (dataFile != null)
+				model.add(dataFile);
 		}
 	}
 
 	
 	/**
-	 * Adds the valid {@link DataFile}s contained in this DataDir (and its
-	 * subfolders, if {@link #isRecursive()}) to the {@link DataSetTreeModel}
+	 * Inserts the valid {@link DataFile}s contained in this DataDir (and its
+	 * subfolders, if {@link #isRecursive()}) into the {@link DataSetTreeModel}
 	 * {@code model}.
-	 * Is called from {@link #addDataFilesToModel(DataSetTreeModel)} is this DataDir
-	 * instance is recursive.
-	 * @param model the target DataSetModel
-	 * @param currentSubDir the current subfolder, is called for every subfolder to find all files.
+	 * Recursive version, called by {@link #insertDataFilesIntoModel(DataSetTreeModel)}. 
+	 * 
+	 * @param model the target {@code DataSetTreeModel}
+	 * @param currentSubDir the current subfolder, is called for every subfolder
+	 * to find all files
 	 */
-	private void addDataFilesToModelRecursively(final DataSetTreeModel model, final File currentSubDir) {
+	private void insertDataFilesIntoModelRecursively(final DataSetTreeModel model, final File currentSubDir) {
 		System.out.println("Looking for TIFF files in " + currentSubDir.toString());
+		DataFileFilter filter = new DataFileFilter();
 		for (File file : currentSubDir.listFiles()) {
 			if(file.isDirectory())
-				addDataFilesToModelRecursively(model, file);
+				insertDataFilesIntoModelRecursively(model, file);
 			else {
-				if(isTiffFile(file)) {
+				if(filter.acceptFileName(file.getName())) {
 					DataFile dataFile = DataFile.make(this, file);
 					if (dataFile != null)
 						model.add(dataFile);
@@ -157,12 +166,52 @@ public class DataDir {
 			}
 		}
 	}
-	
-	
-	// TODO check FileFilter and FilenameFilter instead
-	private boolean isTiffFile(File file) {
-		String fileName = file.getName();
-		return fileName.endsWith(".tif") || fileName.endsWith(".tiff") || fileName.endsWith(".TIF") || fileName.endsWith(".TIFF");
-	}
 
+}
+
+
+/**
+ * Provides initial filtering of files to find candidates for {@link DataFile}s.
+ */
+/*
+ * Checking for isDirectory() is separated from looking at the file name because
+ * the recursive version of insertDataFilesIntoModel... needs to deal with folders
+ * in a different way than with files, and we don't want to iterate twice.
+ * The non-recursive version on the other hand doesn't care for folders.
+ * In this implementation, the recursive method deals with folders itself, and
+ * then calls acceptFileName(), while the non-recursive method can call accept().
+ * 
+ * TODO: Still seems not overly elegant. Also unsure about performance.
+ */
+class DataFileFilter implements FileFilter {
+
+
+	/**
+	 * If {@code file} is not a folder, calls {@link #acceptFileName(String)}
+	 * to assess its file name and extension.
+	 * 
+	 * @param file the path to assess
+	 * @return {@code true} if {@code file} is not a folder and
+	 * {@link #acceptFileName(String)} returns {@code true} as well, else returns
+	 * {@code false}
+	 */
+	@Override
+	public boolean accept(final File file) {
+		final String fileName = file.getName();
+		if (file.isDirectory())
+			return false;
+		return acceptFileName(fileName);
+	}
+	
+
+	/**
+	 * Checks a file name and extension for certain criteria.
+	 * 
+	 * @param fileName the file name to assess
+	 * @return {@code true} if criteria are met, else {@code false}
+	 */
+	public boolean acceptFileName(final String fileName) {
+		return fileName.endsWith(".tif") || fileName.endsWith(".tiff") || fileName.endsWith(".TIF") || fileName.endsWith(".TIFF");		
+	}
+	
 }
