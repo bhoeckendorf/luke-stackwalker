@@ -74,7 +74,7 @@ public class DataDirPanel extends JPanel implements ActionListener {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			dataDirTableModel.addRow(dataDir);
+			dataDirTableModel.insertRow(dataDir);
 		}
 	}
 	

@@ -29,8 +29,10 @@ import de.uni_heidelberg.cos.lukestackwalker.ui.DataDirPanel;
 
 
 /**
- * Model underlying the main JTable in {@link DataDirPanel}.
+ * Model holding {@link DataDir} instances and supplying them to
+ * a JTable view (in {@link DataDirPanel}).
  */
+@SuppressWarnings("serial")
 public class DataDirTableModel extends AbstractTableModel {
 
 	/**
@@ -43,8 +45,9 @@ public class DataDirTableModel extends AbstractTableModel {
 	
 
 	/**
-	 * Returns a list of {@link DataDir}s currently held by the model.
-	 * @return a list of DataDirs currently held by the model
+	 * Returns a list of the {@link DataDir}s held by the model.
+	 * 
+	 * @return a list of the {@code DataDir}s held by the model
 	 */
 	public static List<DataDir> getDataDirs() {
 		return dataDirs;
@@ -52,11 +55,13 @@ public class DataDirTableModel extends AbstractTableModel {
 	
 
 	/**
-	 * Adds a new row (a {@link DataDir}) to the table model.
-	 * Always appends the new row to the end of the table model (the bottom of the table).
-	 * Called from the UI's {@link DataDirPanel}.
+	 * Inserts {@link DataDir} (a new row) into the table model.
+	 * Always appends the new row to the end of the table model
+	 * (the bottom of the table).
+	 * 
+	 * @param dataDir the {@code DataDir} to be inserted
 	 */
-	public void addRow(DataDir dataDir) {
+	public void insertRow(DataDir dataDir) {
 		dataDirs.add(dataDir);
 		final int lastRowIdx = getRowCount() - 1;
 		fireTableRowsInserted(lastRowIdx, lastRowIdx);
@@ -65,8 +70,8 @@ public class DataDirTableModel extends AbstractTableModel {
 
 	/**
 	 * Removes a row (a {@link DataDir}) from the table model.
-	 * Called from the UI's {@link DataDirPanel}.
-	 * @param rowIdx the DataDir's row index
+
+	 * @param rowIdx the {@code DataDir}'s row index
 	 */
 	public void removeRow(final int rowIdx) {
 		dataDirs.remove(rowIdx);
