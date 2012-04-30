@@ -197,9 +197,9 @@ class DataFileFilter implements FileFilter {
 	 */
 	@Override
 	public boolean accept(final File file) {
-		final String fileName = file.getName();
 		if (file.isDirectory())
 			return false;
+		final String fileName = file.getName();
 		return acceptFileName(fileName);
 	}
 	
