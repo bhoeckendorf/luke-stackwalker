@@ -45,7 +45,7 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	 * Add a {@link DataFile} to the model.
 	 * @param dataFile the DataFile to be added
 	 */
-	private void add(final DataFile dataFile) {
+	public void add(final DataFile dataFile) {
 		DataSetTreeModelNode currentParent = rootNode.add(new DataSetTreeModelNode(rootNode, dataFile.getDataSetName()));
 		for (int dataTypeLevel = 0; dataTypeLevel < DataTypeTableModel.getDataTypeCount(true); dataTypeLevel++) {
 			int instanceIndex = dataFile.getDataTypeValue(dataTypeLevel);
