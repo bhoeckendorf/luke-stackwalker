@@ -27,18 +27,25 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 
+/**
+ * Tree model of the data file hierarchy.
+ */
 public class DataSetTreeModel extends DefaultTreeModel {
 
-	private DataSetTreeModelNode rootNode = new DataSetTreeModelNode();
+	private final DataSetTreeModelNode rootNode = new DataSetTreeModelNode();
 	
-	
+
 	public DataSetTreeModel(TreeNode name) {
 		super(name);
 		// TODO stub
 	}
 
 	
-	public void add(DataFile dataFile) {
+	/**
+	 * Add a {@link DataFile} to the model.
+	 * @param dataFile the DataFile to be added
+	 */
+	private void add(final DataFile dataFile) {
 		DataSetTreeModelNode currentParent = rootNode.add(new DataSetTreeModelNode(rootNode, dataFile.getDataSetName()));
 		for (int dataTypeLevel = 0; dataTypeLevel < DataTypeTableModel.getDataTypeCount(true); dataTypeLevel++) {
 			int instanceIndex = dataFile.getDataTypeValue(dataTypeLevel);
@@ -48,14 +55,18 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	}
 	
 	
+	/**
+	 * Updates the model according to the current settings in the UI.
+	 * Then updates the UI.
+	 */
 	public void update() {
 		clear();
-		getDataFiles();
+		populate();
 //		List<DataSetTreeModelNode> cs = rootNode.getChildrenList();
 //		for (DataSetTreeModelNode c : cs) {
 //			System.out.println(c.toString());
 //		}
-		System.out.println(getDebugString());
+		System.out.println(toString());
 		DataSetTreeModelNode[] path = {rootNode};
 		int[] childIndices = new int[rootNode.getChildCount()];
 		for (int i = 0; i < rootNode.getChildCount(); i++)
@@ -63,8 +74,20 @@ public class DataSetTreeModel extends DefaultTreeModel {
 		fireTreeStructureChanged(rootNode, path, childIndices, rootNode.getChildrenList().toArray());
 	}
 	
-	
-	public void clear() {
+
+	/**
+	 * Populates the model.
+	 */
+	private void populate() {
+		for (DataDir dataDir : DataDirTableModel.getDataDirs())
+			dataDir.addDataFilesToModel(this);
+	}
+
+
+	/**
+	 * Clears the model.
+	 */
+	private void clear() {
 		rootNode.getChildrenMap().clear();
 		DataSetTreeModelNode[] path = {rootNode};
 		int[] childIndices = new int[rootNode.getChildCount()];
@@ -122,28 +145,27 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	}
 
 
-	private void getDataFiles() {
-		for (DataDir dataDir : DataDirTableModel.getDataDirs())
-			dataDir.addDataFilesToModel(this);
-	}
-
-
-	public String getDebugString() {
+	/**
+	 * Returns a String representation of the tree model.
+	 * @return a String representation of the tree model
+	 */
+	@Override
+	public String toString() {
 		String indent = "  ";
 		String debug = new String();
 		List<DataSetTreeModelNode> dataSetNodes = rootNode.getChildrenList();
 		for (DataSetTreeModelNode currentNode : dataSetNodes) {
-			debug += (currentNode.toString() + "\n");
+			debug += (currentNode + "\n");
 			String currentIndent = indent;
 			while (!currentNode.getChildAt(0).isLeaf()) {
 				for (DataSetTreeModelNode nextNode : currentNode.getChildrenList()) {
-					debug += String.format("%s%s\n", currentIndent, nextNode.toString());
+					debug += String.format("%s%s\n", currentIndent, nextNode);
 					currentIndent += indent;
 					currentNode = nextNode;
 				}
 			}
 			for (DataSetTreeModelNode leafNode : currentNode.getChildrenList()) {
-				debug += String.format("%s%s\n", currentIndent, leafNode.toString());
+				debug += String.format("%s%s\n", currentIndent, leafNode);
 			}
 		}
 		return debug;
