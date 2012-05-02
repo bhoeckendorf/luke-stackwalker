@@ -46,7 +46,7 @@ public class DataTypePanel extends JPanel implements ActionListener, KeyListener
 		removeButton,
 		upButton,
 		downButton;
-	private JComboBox<String> presetComboBox;
+	private JComboBox presetComboBox;
 	private JTable dataTypeTable;
 	
 	
@@ -74,7 +74,7 @@ public class DataTypePanel extends JPanel implements ActionListener, KeyListener
 		add(filterEdit, "cell 1 0 4 1,growx");
 
 		JLabel presetLabel = new JLabel("Preset");
-		presetComboBox = new JComboBox<String>(DataTypeTableModel.getPresetComboBoxModel());
+		presetComboBox = new JComboBox(DataTypeTableModel.getPresetComboBoxModel());
 		addButton = new JButton("+");
 		removeButton = new JButton("-");
 		upButton = new JButton("up");
@@ -116,7 +116,7 @@ public class DataTypePanel extends JPanel implements ActionListener, KeyListener
 				dataTypeTable.getSelectionModel().setSelectionInterval(rowIdx + 1, rowIdx + 1);
 		}
 		else if (source == presetComboBox) {
-			int idx = ((JComboBox<String>)source).getSelectedIndex();
+			int idx = ((JComboBox)source).getSelectedIndex();
 			dataTypeTableModel.removeTableModelListener(this);
 			dataTypeTableModel.setPreset(idx);
 			dataTypeTableModel.addTableModelListener(this);

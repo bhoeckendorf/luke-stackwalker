@@ -40,7 +40,7 @@ public class DataTypeTableModel extends AbstractTableModel {
 			"To",
 			"Interval"
 	};
-	private static DefaultComboBoxModel<String> presetComboBoxModel = new DefaultComboBoxModel<String>();
+	private static DefaultComboBoxModel presetComboBoxModel = new DefaultComboBoxModel();
 	private int currentPresetIdx = 0;
 	private List<DataTypeModelPreset> presets = new ArrayList<DataTypeModelPreset>();
 
@@ -52,7 +52,7 @@ public class DataTypeTableModel extends AbstractTableModel {
 	}
 	
 	
-	public static DefaultComboBoxModel<String> getPresetComboBoxModel() {
+	public static DefaultComboBoxModel getPresetComboBoxModel() {
 		return presetComboBoxModel;
 	}
 	

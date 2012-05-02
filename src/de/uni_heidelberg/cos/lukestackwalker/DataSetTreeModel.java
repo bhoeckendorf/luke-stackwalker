@@ -66,11 +66,12 @@ public class DataSetTreeModel extends DefaultTreeModel {
 //		for (DataSetTreeModelNode c : cs) {
 //			System.out.println(c.toString());
 //		}
-		System.out.println(toString());
+//		System.out.println(toString());
 		DataSetTreeModelNode[] path = {rootNode};
 		int[] childIndices = new int[rootNode.getChildCount()];
 		for (int i = 0; i < rootNode.getChildCount(); i++)
 			childIndices[i] = i;
+		fireTreeStructureChanged(this, new DataSetTreeModelNode[]{rootNode}, new int[]{0}, new DataSetTreeModelNode[]{rootNode});
 		fireTreeStructureChanged(rootNode, path, childIndices, rootNode.getChildrenList().toArray());
 	}
 	

@@ -39,7 +39,7 @@ public class ActionPanel extends JPanel {
 		updateDataFileHierarchyButton,
 		checkDataSetConsistencyButton,
 		startButton;
-	private JComboBox<String> actionsComboBox;
+	private JComboBox actionsComboBox;
 	private final String[] actions = {"Move to folder structure", "Convert to multi-page"};
 	private JCheckBox
 		compressCheckBox,
@@ -51,7 +51,7 @@ public class ActionPanel extends JPanel {
 		initUi();
 		ButtonActionListener buttonActionListener = new ButtonActionListener();
 		updateDataFileHierarchyButton.addActionListener(buttonActionListener);
-		DefaultComboBoxModel<String> actionsComboBoxModel = new DefaultComboBoxModel<String>();
+		DefaultComboBoxModel actionsComboBoxModel = new DefaultComboBoxModel();
 		for (String action : actions)
 			actionsComboBoxModel.addElement(action);
 		actionsComboBox.setModel(actionsComboBoxModel);
@@ -67,7 +67,7 @@ public class ActionPanel extends JPanel {
 		checkDataSetConsistencyButton = new JButton("Check data file hierarchy consistency");
 		add(checkDataSetConsistencyButton, "cell 0 1,grow");
 		
-		actionsComboBox = new JComboBox<String>();
+		actionsComboBox = new JComboBox();
 		add(actionsComboBox, "cell 0 2,grow");
 		
 		compressCheckBox = new JCheckBox("Compress");
