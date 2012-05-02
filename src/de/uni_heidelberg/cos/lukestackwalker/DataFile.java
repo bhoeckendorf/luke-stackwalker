@@ -99,7 +99,8 @@ public class DataFile {
 		String comparableFileName = absoluteFilePath.replace(dataDir.getPath().toString(), "").substring(1);//.replace(File.separator, "");
 		DataType firstDataType = DataTypeTableModel.getDataTypeOfLevel(true, 0);
 		String firstFileNameTag = firstDataType.getFileNameTag();
-		dataSetName = comparableFileName.split(firstFileNameTag)[0];
+		//dataSetName = comparableFileName.split(firstFileNameTag)[0];
+		dataSetName = getDataSetName(comparableFileName);
 
 		fileNameTagValues = getFileNameTagValues(comparableFileName);
 		if (fileNameTagValues.isEmpty())
@@ -189,6 +190,26 @@ public class DataFile {
 		return values;
 	}
 
+	
+	/**
+	 * Returns the name of the dataset that this DataFile instance belongs to.
+	 * @param comparableFileName the subject
+	 * @return the name of the dataset that this DataFile instance belongs to.
+	 */
+	// TODO: this can probably somehow be integrated in all the iterations that
+	// are done to get the data type values.
+	private String getDataSetName(final String comparableFileName) {
+		int index = comparableFileName.length() - 1;
+		for (DataType dataType : DataTypeTableModel.getDataTypes(true)) {
+			final String fileNameTag = dataType.getFileNameTag();
+			final int currentIndex = comparableFileName.indexOf(fileNameTag);
+			if (currentIndex < index)
+				index = currentIndex;
+		}
+		System.out.println("0-" + index + " of " + )
+		return comparableFileName.substring(0, index);
+	}
+	
 
 	/**
 	 * Finds fileNameTag in comparableFileName, and returns any number of digits downstream as {@code int}, which it returns.
