@@ -19,148 +19,179 @@
 
 package de.uni_heidelberg.cos.lukestackwalker;
 
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
+/**
+ * A data parameter that is represented in the file names via a tag
+ * followed by a value.
+ * 
+ * <h4>Example</h4>
+ * <p>A measurement over time of multiple channels, the data is split into
+ * single files for each combination of DataTypes.</p>
+ * <ul>
+ * <li>Experiment1Time001Chn1.csv</li>
+ * <li>Experiment1Time001Chn2.csv</li>
+ * <li>Experimene1Time002Chn1.csv</li>
+ * <li>Experiment1Time002Chn2.csv</li>
+ * <li>...
+ * </ul>
+ * 
+ * <p>In this example, DataTypes are Timepoint and Channel, their file name
+ * tags are "Time" and "Chn", respectively. Their value is the value of
+ * all digits directly following the file name tags.</p>
+ */
+public class DataType {
 
-public class DataType implements ChangeListener {
+	/**	the name of the DataType. */
+	private String name = "";
+	
+	/** the file name tag */
+	private String fileNameTag = "";
+	
+	/** whether or not the DataType is activated and will be used to compute
+	 * the data file hierarchy */
+	private boolean	active = true;
+	
+	/** whether or not only a range of DataType values will be considered */
+	private boolean rangeActive = false;
 
-	private String
-		name = "",
-		fileNameTag = "";
-	private boolean
-		active = true,
-		rangeActive = false;
-	private SpinnerNumberModel
-		rangeStartSpinnerModel = new SpinnerNumberModel(0, 0, 99999, 1),
-		rangeEndSpinnerModel = new SpinnerNumberModel(0, 0, 99999, 1),
-		intervalSpinnerModel = new SpinnerNumberModel(1, 1, 999, 1);
+	// TODO: add JavaDoc for all params and clarify it a bit more.
+	private int	rangeStart = 0;
+	private int rangeEnd = 0;
+	private int interval = 1;
 	
 	
 	public DataType() {
-		rangeStartSpinnerModel.addChangeListener(this);
-		rangeEndSpinnerModel.addChangeListener(this);
 	}
 	
 	
-	public DataType(String name) {
+	public DataType(final String name) {
 		setName(name);
-		rangeStartSpinnerModel.addChangeListener(this);
-		rangeEndSpinnerModel.addChangeListener(this);
 	}
 	
 	
-	public void stateChanged(ChangeEvent event) {
-		SpinnerNumberModel source = (SpinnerNumberModel)event.getSource();
-		int value = source.getNumber().intValue();
-		if (source == rangeStartSpinnerModel) {
-			int rangeEndValue = getRangeEnd();
-			if (rangeEndValue < value)
-				setRangeEnd(value);
-		}
-		else {
-			int rangeStartValue = rangeStartSpinnerModel.getNumber().intValue();
-			if (rangeStartValue > value)
-				setRangeStart(value);
-		}
-	}
-
-	
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 	
 	
+	/**
+	 * Returns the file name tag of this DataType.
+	 * @return the file name tag of this DataType
+	 */
 	public String getName() {
 		return name;
 	}
 	
 	
-	public void setActive(boolean state) {
+	/**
+	 * Sets whether or not this DataType is used for processing.
+	 * @param state whether or not this DataType is used for processing
+	 */
+	public void setActive(final boolean state) {
 		active = state;
 	}
 	
 	
+	/**
+	 * Returns whether or not this DataType is used for processing.
+	 * @return whether or not this DataType is used for processing
+	 */
 	public boolean isActive() {
 		return active;
 	}
 	
 	
-	public void setRangeActive(boolean state) {
+	/**
+	 * Sets whether or not the processing is limited by a set index range.
+	 * @param state whether or not the processing is limited by a set index range
+	 */
+	public void setRangeActive(final boolean state) {
 		rangeActive = state;
 	}
 	
 	
+	/**
+	 * Returns whether or not the processing is limited by a set index range.
+	 * @return whether or not the processing is limited by a set index range
+	 */
 	public boolean isRangeActive() {
 		return rangeActive;
 	}
 	
 	
-	public void setFileNameTag(String tag) {
+	/**
+	 * Sets the file name tag.
+	 * @param tag the file name tag
+	 */
+	public void setFileNameTag(final String tag) {
 		fileNameTag = tag;
 	}
 	
 	
+	/**
+	 * Returns the file name tag.
+	 * @return the file name tag
+	 */
 	public String getFileNameTag() {
 		return fileNameTag;
 	}
 	
 	
-	public void setRangeStart(int start) {
-		rangeStartSpinnerModel.setValue(start);
+	/**
+	 * Sets the first index that will be processed.
+	 * @param start the first index that will be processed
+	 */
+	public void setRangeStart(final int start) {
+		rangeStart = start;
+		if (rangeStart > rangeEnd)
+			rangeEnd = rangeStart;
 	}
 	
 	
+	/**
+	 * Returns the first index that will be processed.
+	 * @return the first index thet will be processed
+	 */
 	public int getRangeStart() {
-		return rangeStartSpinnerModel.getNumber().intValue();
+		return rangeStart;
+	}
+	
+
+	/**
+	 * Sets the final index that will be processed.
+	 * @param end the final index that will be processed
+	 */
+	public void setRangeEnd(final int end) {
+		rangeEnd = end;
+		if (rangeEnd < rangeStart)
+			rangeStart = rangeEnd;
 	}
 	
 	
-	public void setRangeEnd(int end) {
-		rangeEndSpinnerModel.setValue(end);
-	}
-	
-	
+	/** 
+	 * Returns the final index that will be processed.
+	 * @return the end of the range
+	 */
 	public int getRangeEnd() {
-		return rangeEndSpinnerModel.getNumber().intValue();
+		return rangeEnd;
 	}
 	
 	
-	public void setInterval(int interval) {
-		intervalSpinnerModel.setValue(interval);
+	/**
+	 * Sets the interval for traversing over this {@code DataType}'s indices.
+	 * @param interval the interval for traversing over this {@code DataType}'s indices
+	 */
+	public void setInterval(final int interval) {
+		this.interval = interval;
 	}
 	
 	
+	/**
+	 * Returns the interval for traversing over this {@code DataType}'s indices.
+	 * @return the interval for traversing over this {@code DataType}'s indices
+	 */
 	public int getInterval() {
-		return intervalSpinnerModel.getNumber().intValue();
+		return interval;
 	}
 	
-	
-	public void setRange(int start, int end) {
-		setRangeStart(start);
-		setRangeEnd(end);
-	}
-	
-	
-	public void setRange(int start, int end, int interval) {
-		setRange(start, end);
-		setInterval(interval);
-	}
-	
-	
-	public SpinnerNumberModel getRangeStartSpinnerModel() {
-		return rangeStartSpinnerModel;
-	}
-	
-	
-	public SpinnerNumberModel getRangeEndSpinnerModel() {
-		return rangeEndSpinnerModel;
-	}
-
-	
-	public SpinnerNumberModel getIntervalSpinnerModel() {
-		return intervalSpinnerModel;
-	}
-
 }

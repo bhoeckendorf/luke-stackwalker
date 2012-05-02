@@ -27,21 +27,44 @@ import java.util.Map;
 
 
 /**
- * Holds the information associated with a data file. Its location, DataTypes and values.
+ * Holds the information associated with a data file. Its location,
+ * DataTypes and values.
  */
 public class DataFile {
 	
-	private final DataDir dataDir; // TODO maybe not needed?
+//	/** the {@link DataDir} that the file is located in */
+//	// Currently not used, hence commented out.
+//	private final DataDir dataDir;
+
+	/**
+	 * the {@link DataType} values, as key-value pairs, with
+	 * {@link DataType #getName()} as key
+	 */
 	private final Map<String, Integer> fileNameTagValues;
-	private final String
-		absoluteFilePath,
-		dataSetName;
-	private boolean isValid = true; // TODO remove if possible
+	
+	/** the absolute location of the file */
+	private final String absoluteFilePath;
+	
+	/** the name of the data set the file belongs to */
+	private final String dataSetName;
+	
+	/**
+	 * Whether the file is valid or not. A DataFile is invalid if its
+	 * location can't be read from or if not all DataType fileNameTags
+	 * are present in its file name.
+	 */
+	// TODO: replace by something more elegant, if possible
+	private boolean isValid = true;
+	
+	/** the {@code File} instance of the DataFile */
 	private final File file;
 	
 
 	/**
-	 * Returns a new DataFile instance. 
+	 * Returns a new {@code DataFile} instance or {@code null} if the
+	 * location can't be read from or not all file name tags are present
+	 * in the file name.
+	 *  
 	 * @param dataDir the data folder
 	 * @param file the data file
 	 * @return a new DataFile instance, or {@code null} file is non-existent or doesn't contain all file name tags the activated {@link DataType}s in {@link DataTypeTableModel}).
@@ -61,17 +84,15 @@ public class DataFile {
 	 * @see #make(String, boolean, File)
 	 */
 	private DataFile(final DataDir dataDir, final File file) {
-		this.dataDir = dataDir;
+//		this.dataDir = dataDir;  // see above
 		this.file = file;
 		
 		String filePath = "";
 		try {
 			filePath = this.file.getCanonicalPath();
 		} catch (IOException e) {
-//			TODO deal with this more gracefully
-			System.out.println("In constructor for DataFile:");
-			e.printStackTrace();
-			System.exit(1);
+			this.isValid = false;
+			// TODO: generate some warning in the UI
 		}
 		absoluteFilePath = filePath;
 		
@@ -85,7 +106,7 @@ public class DataFile {
 			isValid = false;
 	}
 
-
+	
 	/**
 	 * Returns the file's path.
 	 * @return the file's path
