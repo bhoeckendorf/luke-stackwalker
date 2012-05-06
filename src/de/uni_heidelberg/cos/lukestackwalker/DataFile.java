@@ -46,7 +46,7 @@ public class DataFile {
 	private final String absoluteFilePath;
 	
 	/** the name of the data set the file belongs to */
-	private final String dataSetName;
+	private String dataSetName;
 	
 	/**
 	 * Whether the file is valid or not. A DataFile is invalid if its
@@ -97,10 +97,10 @@ public class DataFile {
 		absoluteFilePath = filePath;
 		
 		String comparableFileName = absoluteFilePath.replace(dataDir.getPath().toString(), "").substring(1);//.replace(File.separator, "");
-		DataType firstDataType = DataTypeTableModel.getDataTypeOfLevel(true, 0);
-		String firstFileNameTag = firstDataType.getFileNameTag();
-		//dataSetName = comparableFileName.split(firstFileNameTag)[0];
-		dataSetName = getDataSetName(comparableFileName);
+//		DataType firstDataType = DataTypeTableModel.getDataTypeOfLevel(true, 0);
+//		String firstFileNameTag = firstDataType.getFileNameTag();
+//		dataSetName = comparableFileName.split(firstFileNameTag)[0];
+//		dataSetName = getDataSetName(comparableFileName);
 
 		fileNameTagValues = getFileNameTagValues(comparableFileName);
 		if (fileNameTagValues.isEmpty())
@@ -175,75 +175,93 @@ public class DataFile {
 	 * @see DataType
 	 */
 	private Map<String, Integer> getFileNameTagValues(final String comparableFileName) {
+		int firstIndex = comparableFileName.length() - 1;
 		Map<String, Integer> values = new HashMap<String, Integer>();
 		List<DataType> dataTypes = DataTypeTableModel.getDataTypes(true);
 		for (DataType dataType : dataTypes) {
 			String dataTypeName = dataType.getName();
 			String fileNameTag = dataType.getFileNameTag();
-			final int value = getValueOfTag(comparableFileName, fileNameTag);
-			values.put(dataTypeName, value);
-			if (value == -1) {
+			final int[] valueArray = getValueAndIndexOfLastTag(comparableFileName, fileNameTag);
+			if (valueArray.length == 0) {
 				values.clear();
 				break;
 			}
+			final int value = valueArray[0];
+			values.put(dataTypeName, value);
+			if (valueArray[1] < firstIndex)
+				firstIndex = valueArray[1];
 		}
+		dataSetName = comparableFileName.substring(0, firstIndex);
 		return values;
 	}
 
 	
-	/**
-	 * Returns the name of the dataset that this DataFile instance belongs to.
-	 * @param comparableFileName the subject
-	 * @return the name of the dataset that this DataFile instance belongs to.
-	 */
-	// TODO: this can probably somehow be integrated in all the iterations that
-	// are done to get the data type values.
-	private String getDataSetName(final String comparableFileName) {
-		int index = comparableFileName.length() - 1;
-		for (DataType dataType : DataTypeTableModel.getDataTypes(true)) {
-			final String fileNameTag = dataType.getFileNameTag();
-			final int currentIndex = comparableFileName.indexOf(fileNameTag);
-			if (currentIndex < index)
-				index = currentIndex;
-		}
-		System.out.println("0-" + index + " of " + )
-		return comparableFileName.substring(0, index);
-	}
-	
+	private int[] getValueAndIndexOfLastTag(final String comparableFileName, final String fileNameTag) {
+		final int tagStart = comparableFileName.lastIndexOf(fileNameTag);
+		if (tagStart == -1)
+			return new int[0];
 
-	/**
-	 * Finds fileNameTag in comparableFileName, and returns any number of digits downstream as {@code int}, which it returns.
-	 * Example: comparableFileName = footag123bar, fileNameTag = tag, return = 123 
-	 * @param comparableFileName the subject
-	 * @param fileNameTag the query
-	 * @return the {@code int} in comparableFileNameTag downstream of fileNameTag, or -1 if there is no such thing
-	 */
-	private int getValueOfTag(final String comparableFileName, final String fileNameTag) {
-		String[] parts = comparableFileName.split(fileNameTag);
-		if(parts.length != 2)
-			return -1;
-
-		final String string = parts[1];
-		char[] chars = string.toCharArray();
+		final int tagEnd = tagStart + fileNameTag.length();
+		final int nameSize = comparableFileName.length();
+		char[] chars = comparableFileName.toCharArray();
 		int i = 0;
-		for (char c : chars) {
-			if (Character.isDigit(c))
+		for (int c = tagEnd; c < nameSize; ++c) {
+			if (Character.isDigit(chars[c]))
 				++i;
 			else
 				break;
 		}
 		
 		if (i == 0)
-			return -1;
+			return new int[0];
 		
 		int value = -1;
 		try {
-			value = Integer.parseInt(string.substring(0, i));
+			value = Integer.parseInt(comparableFileName.substring(tagEnd, tagEnd + i));
 		}
 		catch(NumberFormatException e) {
-			return value;
+			return new int[0];
 		}
-		return value;
+		if (value == -1)
+			return new int[0];
+		
+		return new int[]{value, tagStart};
 	}
+
+	
+//	/**
+//	 * Finds fileNameTag in comparableFileName, and returns any number of digits downstream as {@code int}, which it returns.
+//	 * Example: comparableFileName = footag123bar, fileNameTag = tag, return = 123 
+//	 * @param comparableFileName the subject
+//	 * @param fileNameTag the query
+//	 * @return the {@code int} in comparableFileNameTag downstream of fileNameTag, or -1 if there is no such thing
+//	 */
+//	private int getValueOfTag(final String comparableFileName, final String fileNameTag) {
+//		String[] parts = comparableFileName.split(fileNameTag);
+//		if(parts.length != 2)
+//			return -1;
+//
+//		final String string = parts[1];
+//		char[] chars = string.toCharArray();
+//		int i = 0;
+//		for (char c : chars) {
+//			if (Character.isDigit(c))
+//				++i;
+//			else
+//				break;
+//		}
+//		
+//		if (i == 0)
+//			return -1;
+//		
+//		int value = -1;
+//		try {
+//			value = Integer.parseInt(string.substring(0, i));
+//		}
+//		catch(NumberFormatException e) {
+//			return value;
+//		}
+//		return value;
+//	}
 
 }

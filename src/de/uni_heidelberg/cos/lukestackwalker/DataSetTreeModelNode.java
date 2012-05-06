@@ -84,7 +84,7 @@ public class DataSetTreeModelNode extends DefaultMutableTreeNode {
 		case DATASET:
 			return dataSetName;
 		case DATATYPE:
-			return dataType.getName() + " " + instanceIndex;
+			return String.format("%s %05d", dataType.getName(), instanceIndex);
 		case DATAFILE:
 			return dataFile.getFilePath();
 		default:
