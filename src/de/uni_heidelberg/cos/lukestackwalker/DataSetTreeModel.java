@@ -19,12 +19,15 @@
 
 package de.uni_heidelberg.cos.lukestackwalker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+
+import de.uni_heidelberg.cos.lukestackwalker.ui.LogPanel;
 
 
 /**
@@ -80,8 +83,15 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	 * Populates the model.
 	 */
 	private void populate() {
+		LogPanel.log("Populating data file hierarchy ...\n");
 		for (DataDir dataDir : DataDirTableModel.getDataDirs())
 			dataDir.insertDataFilesIntoModel(this);
+		System.out.println("Done populating data file hierarchy.");
+		List<DataSetTreeModelNode> leafNodes = new ArrayList<DataSetTreeModelNode>();
+		getLeafNodes(rootNode, leafNodes);
+		LogPanel.log("Got " + leafNodes.size() + " leaf nodes.\n");
+		for (DataSetTreeModelNode node : leafNodes)
+			LogPanel.log(node.toString() + "\n");
 	}
 
 
@@ -145,7 +155,17 @@ public class DataSetTreeModel extends DefaultTreeModel {
 		// TODO stub	
 	}
 
-
+	
+	public void getLeafNodes(final DataSetTreeModelNode node, final List<DataSetTreeModelNode> leafNodes) {
+		if (node.isLeaf())
+			leafNodes.add(node);
+		else {
+			for (DataSetTreeModelNode child : node.getChildrenList())
+				getLeafNodes(child, leafNodes);
+		}
+	}
+	
+	
 	/**
 	 * Returns a String representation of the tree model.
 	 * @return a String representation of the tree model
@@ -153,7 +173,7 @@ public class DataSetTreeModel extends DefaultTreeModel {
 	@Override
 	public String toString() {
 		String indent = "  ";
-		String debug = new String();
+		String debug = "";
 		List<DataSetTreeModelNode> dataSetNodes = rootNode.getChildrenList();
 		for (DataSetTreeModelNode currentNode : dataSetNodes) {
 			debug += (currentNode + "\n");

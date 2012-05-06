@@ -116,12 +116,10 @@ public class DataDir {
 	 * DataSetTreeModel. Instead, we're going to add to the latter list right away.
 	 */
 	public void insertDataFilesIntoModel(final DataSetTreeModel model) {
-		System.out.println("Populating data file hierarchy ...");
 		if (isRecursive)
 			insertDataFilesIntoModelRecursively(model, path);
 		else
 			insertDataFilesIntoModelNonRecursively(model);
-		System.out.println("Done populating data file hierarchy.");
 	}
 	
 
