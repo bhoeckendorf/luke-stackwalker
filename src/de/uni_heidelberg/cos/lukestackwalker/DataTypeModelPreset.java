@@ -38,6 +38,10 @@ public class DataTypeModelPreset {
 
 	public static List<DataTypeModelPreset> read() {
 		List<DataTypeModelPreset> presets = new ArrayList<DataTypeModelPreset>();
+		File[] files = presetsDir.listFiles();
+		if (files == null)
+			return presets;
+		
 		for (File file : presetsDir.listFiles()) {
 			if (!file.isFile() || !file.getName().endsWith(".txt"))
 				continue;
