@@ -156,7 +156,10 @@ public class DataDir {
 	private void insertDataFilesIntoModelRecursively(final DataSetTreeModel model, final File currentSubDir) {
 //		System.out.println("Looking for TIFF files in " + currentSubDir.toString());
 		DataFileFilter filter = new DataFileFilter();
-		for (File file : currentSubDir.listFiles()) {
+		File[] files = currentSubDir.listFiles();
+		if (files == null)
+			return;
+		for (File file : files) {
 			if(file.isDirectory())
 				insertDataFilesIntoModelRecursively(model, file);
 			else {
