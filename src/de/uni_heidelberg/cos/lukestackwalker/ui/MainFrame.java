@@ -60,6 +60,9 @@ public class MainFrame extends JFrame {
 		
 		JPanel metadataPanel = new JPanel();
 		tabbedPane.add(metadataPanel, "Meta data");
+		
+		LogPanel logPanel = new LogPanel();
+		tabbedPane.add(logPanel, "Log");
 	}
 
 }
