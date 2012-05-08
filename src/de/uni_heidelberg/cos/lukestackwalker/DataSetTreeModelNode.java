@@ -78,6 +78,13 @@ public class DataSetTreeModelNode extends DefaultMutableTreeNode {
 	}
 	
 	
+	public DataFile getDataFile() {
+		if (type != DATAFILE)
+			return null;
+		return dataFile;
+	}
+	
+	
 	@Override
 	public String toString() {
 		switch (type) {

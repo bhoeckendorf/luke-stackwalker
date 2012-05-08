@@ -26,13 +26,15 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import de.uni_heidelberg.cos.lukestackwalker.DataSetTreeModel;
 
 
-public class ActionPanel extends JPanel {
+public class ActionPanel extends JPanel implements ActionListener {
 	
 	private DataSetTreeModel dataSetTreeModel;
 	private JButton
@@ -40,17 +42,14 @@ public class ActionPanel extends JPanel {
 		checkDataSetConsistencyButton,
 		startButton;
 	private JComboBox actionsComboBox;
-	private final String[] actions = {"Move to folder structure", "Convert to multi-page"};
-	private JCheckBox
-		compressCheckBox,
-		updateMetadataCheckBox;
+	private final String[] actions = {"Move to folder structure"};
+	private static JTextField targetDirEdit = new JTextField();
 	
 	
 	public ActionPanel(DataSetTreeModel dataSetTreeModel) {
 		this.dataSetTreeModel = dataSetTreeModel;
 		initUi();
-		ButtonActionListener buttonActionListener = new ButtonActionListener();
-		updateDataFileHierarchyButton.addActionListener(buttonActionListener);
+		updateDataFileHierarchyButton.addActionListener(this);
 		DefaultComboBoxModel actionsComboBoxModel = new DefaultComboBoxModel();
 		for (String action : actions)
 			actionsComboBoxModel.addElement(action);
@@ -70,24 +69,27 @@ public class ActionPanel extends JPanel {
 		actionsComboBox = new JComboBox();
 		add(actionsComboBox, "cell 0 2,grow");
 		
-		compressCheckBox = new JCheckBox("Compress");
-		updateMetadataCheckBox = new JCheckBox("Update metadata");
-		add(compressCheckBox, "cell 0 3,grow");
-		add(updateMetadataCheckBox, "cell 0 3,grow");
+		JLabel targetDirLabel = new JLabel("Target folder");
+		add(targetDirLabel, "cell 0 3");
+		add(targetDirEdit, "cell 0 3,grow");
 		
 		startButton = new JButton("Start");
 		add(startButton, "cell 0 4,grow");
 	}
-	
-	
-	class ButtonActionListener implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JButton source = (JButton)e.getSource();
-			if (source == updateDataFileHierarchyButton)
-				dataSetTreeModel.update();
-		}
+	
+	public static String getTargetDir() {
+		return targetDirEdit.getText().trim();
+	}
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton source = (JButton)e.getSource();
+		if (source == updateDataFileHierarchyButton)
+			dataSetTreeModel.update();
+		else if (source == startButton)
+			dataSetTreeModel.move();
 	}
 
 }

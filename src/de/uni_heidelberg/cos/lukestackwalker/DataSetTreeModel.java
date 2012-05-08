@@ -27,6 +27,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import de.uni_heidelberg.cos.lukestackwalker.ui.ActionPanel;
 import de.uni_heidelberg.cos.lukestackwalker.ui.LogPanel;
 
 
@@ -76,6 +77,19 @@ public class DataSetTreeModel extends DefaultTreeModel {
 			childIndices[i] = i;
 		fireTreeStructureChanged(this, new DataSetTreeModelNode[]{rootNode}, new int[]{0}, new DataSetTreeModelNode[]{rootNode});
 		fireTreeStructureChanged(rootNode, path, childIndices, rootNode.getChildrenList().toArray());
+	}
+	
+	
+	public void move() {
+		Mover mover = new Mover(ActionPanel.getTargetDir());
+		List<DataSetTreeModelNode> leafNodes = new ArrayList<DataSetTreeModelNode>();
+		getLeafNodes(rootNode, leafNodes);
+		for (DataSetTreeModelNode node : leafNodes) {
+			DataFile dataFile = node.getDataFile();
+			if (dataFile == null)
+				continue;
+			mover.move(dataFile);
+		}
 	}
 	
 

@@ -57,7 +57,7 @@ public class DataFile {
 	private boolean isValid = true;
 	
 	/** the {@code File} instance of the DataFile */
-	private final File file;
+	public final File file;
 	
 
 	/**
@@ -167,6 +167,17 @@ public class DataFile {
 	}
 	
 
+	public String getTargetSubFolder() {
+		String result = "";
+		for (int i = 0; i < 4; ++i) {
+			DataType dataType = DataTypeTableModel.getDataTypeOfLevel(true, i);
+			String dataTypeName = dataType.getName();
+			result += String.format("s%05d%s", dataTypeName, fileNameTagValues.get(dataTypeName), File.pathSeparator);
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * Returns a key-value Map of {@link DataType}s and their respective values in comparableFileName.
 	 * If this method runs into trouble, it returns an empty Map. 
