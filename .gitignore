@@ -1,5 +1,3 @@
-doc/
-
 # Compiled source #
 ###################
 *.com
@@ -34,3 +32,11 @@ doc/
 ehthumbs.db
 Icon?
 Thumbs.db
+
+# Generated documentation #
+###########################
+doc/
+
+# Maven output #
+################
+target/
