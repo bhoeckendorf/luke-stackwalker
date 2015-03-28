@@ -1,22 +1,3 @@
-/*
- * This file is part of Luke Stackwalker.
- * https://github.com/bhoeckendorf/luke-stackwalker
- * 
- * Copyright 2012 Burkhard Hoeckendorf <b.hoeckendorf at web dot de>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uni_heidelberg.cos.agw.stackwalker;
 
 import de.uni_heidelberg.cos.agw.stackwalker.ui.MainFrame;
@@ -26,8 +7,7 @@ import java.awt.*;
 
 public class LukeStackwalker {
 
-    // run standalone
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException e) {
@@ -51,11 +31,5 @@ public class LukeStackwalker {
                 }
             }
         });
-    }
-
-    // run as ImageJ plug-in
-    public void run(String arg0) {
-        String[] args = {arg0};
-        main(args);
     }
 }

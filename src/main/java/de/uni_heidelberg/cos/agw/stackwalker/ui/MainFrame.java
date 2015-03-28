@@ -1,22 +1,3 @@
-/*
- * This file is part of Luke Stackwalker.
- * https://github.com/bhoeckendorf/luke-stackwalker
- * 
- * Copyright 2012 Burkhard Hoeckendorf <b.hoeckendorf at web dot de>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uni_heidelberg.cos.agw.stackwalker.ui;
 
 import de.uni_heidelberg.cos.agw.stackwalker.DataSetTreeModel;
@@ -24,20 +5,17 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
-
 public class MainFrame extends JFrame {
 
-    private DataSetTreeModel dataSetTreeModel;
+    private final DataSetTreeModel dataSetTreeModel;
 
-
-    public MainFrame(DataSetTreeModel dataSetTreeModel) {
+    public MainFrame(final DataSetTreeModel dataSetTreeModel) {
         this.dataSetTreeModel = dataSetTreeModel;
         setTitle("Luke Stackwalker");
         initUi();
     }
 
-
-    private final void initUi() {
+    private void initUi() {
         //getContentPane().setLayout();
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane);
@@ -62,5 +40,4 @@ public class MainFrame extends JFrame {
         LogPanel logPanel = new LogPanel();
         tabbedPane.add(logPanel, "Log");
     }
-
 }

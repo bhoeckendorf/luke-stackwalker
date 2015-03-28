@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+archivesBaseName = 'luke-stackwalker'
+group = 'de.uni_heidelberg.cos.agw'
+sourceCompatibility = 1.6
+
+mainClassName = "de.uni_heidelberg.cos.agw.stackwalker.LukeStackwalker"
+
+jar {
+    from 'readme.md'
+    from 'license.txt'
+}
+
+dependencies {
+    compile 'commons-io:commons-io:+'
+    compile 'com.miglayout:miglayout-swing:+'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
