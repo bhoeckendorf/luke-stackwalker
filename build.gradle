@@ -5,7 +5,7 @@ archivesBaseName = 'luke-stackwalker'
 group = 'de.uni_heidelberg.cos.agw'
 sourceCompatibility = 1.6
 
-mainClassName = "de.uni_heidelberg.cos.agw.stackwalker.LukeStackwalker"
+mainClassName = "de.uni_heidelberg.cos.agw.stackwalker.Main"
 
 jar {
     from 'readme.md'
