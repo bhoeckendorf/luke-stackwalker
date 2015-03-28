@@ -19,76 +19,67 @@
 
 package de.uni_heidelberg.cos.agw.stackwalker.ui;
 
+import de.uni_heidelberg.cos.agw.stackwalker.DataSetTreeModel;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import net.miginfocom.swing.MigLayout;
-import de.uni_heidelberg.cos.agw.stackwalker.DataSetTreeModel;
-
 
 public class ActionPanel extends JPanel implements ActionListener {
-	
-	private DataSetTreeModel dataSetTreeModel;
-	private JButton
-		updateDataFileHierarchyButton,
-		checkDataSetConsistencyButton,
-		startButton;
-	private JComboBox actionsComboBox;
-	private final String[] actions = {"Move to folder structure"};
-	private static JTextField targetDirEdit = new JTextField();
-	
-	
-	public ActionPanel(DataSetTreeModel dataSetTreeModel) {
-		this.dataSetTreeModel = dataSetTreeModel;
-		initUi();
-		updateDataFileHierarchyButton.addActionListener(this);
-		DefaultComboBoxModel actionsComboBoxModel = new DefaultComboBoxModel();
-		for (String action : actions)
-			actionsComboBoxModel.addElement(action);
-		actionsComboBox.setModel(actionsComboBoxModel);
-	}
-	
-	
-	private void initUi() {
-		setLayout(new MigLayout("", "[grow]", "[][][][][]"));
-		
-		updateDataFileHierarchyButton = new JButton("Update data file hierarchy");
-		add(updateDataFileHierarchyButton, "cell 0 0,grow");
-		
-		checkDataSetConsistencyButton = new JButton("Check data file hierarchy consistency");
-		add(checkDataSetConsistencyButton, "cell 0 1,grow");
-		
-		actionsComboBox = new JComboBox();
-		add(actionsComboBox, "cell 0 2,grow");
-		
-		JLabel targetDirLabel = new JLabel("Target folder");
-		add(targetDirLabel, "cell 0 3");
-		add(targetDirEdit, "cell 0 3,grow");
-		
-		startButton = new JButton("Start");
-		add(startButton, "cell 0 4,grow");
-	}
 
-	
-	public static String getTargetDir() {
-		return targetDirEdit.getText().trim();
-	}
-	
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		JButton source = (JButton)e.getSource();
-		if (source == updateDataFileHierarchyButton)
-			dataSetTreeModel.update();
-		else if (source == startButton)
-			dataSetTreeModel.move();
-	}
+    private static JTextField targetDirEdit = new JTextField();
+    private final String[] actions = {"Move to folder structure"};
+    private DataSetTreeModel dataSetTreeModel;
+    private JButton
+            updateDataFileHierarchyButton,
+            checkDataSetConsistencyButton,
+            startButton;
+    private JComboBox actionsComboBox;
+
+
+    public ActionPanel(DataSetTreeModel dataSetTreeModel) {
+        this.dataSetTreeModel = dataSetTreeModel;
+        initUi();
+        updateDataFileHierarchyButton.addActionListener(this);
+        DefaultComboBoxModel actionsComboBoxModel = new DefaultComboBoxModel();
+        for (String action : actions)
+            actionsComboBoxModel.addElement(action);
+        actionsComboBox.setModel(actionsComboBoxModel);
+    }
+
+    public static String getTargetDir() {
+        return targetDirEdit.getText().trim();
+    }
+
+    private void initUi() {
+        setLayout(new MigLayout("", "[grow]", "[][][][][]"));
+
+        updateDataFileHierarchyButton = new JButton("Update data file hierarchy");
+        add(updateDataFileHierarchyButton, "cell 0 0,grow");
+
+        checkDataSetConsistencyButton = new JButton("Check data file hierarchy consistency");
+        add(checkDataSetConsistencyButton, "cell 0 1,grow");
+
+        actionsComboBox = new JComboBox();
+        add(actionsComboBox, "cell 0 2,grow");
+
+        JLabel targetDirLabel = new JLabel("Target folder");
+        add(targetDirLabel, "cell 0 3");
+        add(targetDirEdit, "cell 0 3,grow");
+
+        startButton = new JButton("Start");
+        add(startButton, "cell 0 4,grow");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JButton source = (JButton) e.getSource();
+        if (source == updateDataFileHierarchyButton)
+            dataSetTreeModel.update();
+        else if (source == startButton)
+            dataSetTreeModel.move();
+    }
 
 }

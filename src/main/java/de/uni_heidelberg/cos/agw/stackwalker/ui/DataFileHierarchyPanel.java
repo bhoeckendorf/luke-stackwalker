@@ -19,46 +19,43 @@
 
 package de.uni_heidelberg.cos.agw.stackwalker.ui;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import net.miginfocom.swing.MigLayout;
 import de.uni_heidelberg.cos.agw.stackwalker.DataSetTreeModel;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 public class DataFileHierarchyPanel extends JPanel {
 
-	private DataSetTreeModel dataSetTreeModel;
-	private JTree tree;
-	private DefaultMutableTreeNode rootNode;
-	
-	
-	public DataFileHierarchyPanel(DataSetTreeModel dataSetTreeModel) {
-		this.dataSetTreeModel = dataSetTreeModel;
-		initUi();
-		tree.setModel(this.dataSetTreeModel);
-	}
-	
-	
-	private final void initUi() {
-		setLayout(new MigLayout("", "[grow]", "[][grow]"));
-		
-		JLabel description = new JLabel();
-		rootNode = new DefaultMutableTreeNode();
-		tree = new JTree(rootNode);
-		tree.setRootVisible(true);
-		JScrollPane treeScrollPane = new JScrollPane(tree);
-		
-		add(description, "cell 0 0");
-		add(treeScrollPane, "cell 0 1,grow");
-	}
-	
-	
-	public void update() {
-		dataSetTreeModel.update();
-	}
+    private DataSetTreeModel dataSetTreeModel;
+    private JTree tree;
+    private DefaultMutableTreeNode rootNode;
+
+
+    public DataFileHierarchyPanel(DataSetTreeModel dataSetTreeModel) {
+        this.dataSetTreeModel = dataSetTreeModel;
+        initUi();
+        tree.setModel(this.dataSetTreeModel);
+    }
+
+
+    private final void initUi() {
+        setLayout(new MigLayout("", "[grow]", "[][grow]"));
+
+        JLabel description = new JLabel();
+        rootNode = new DefaultMutableTreeNode();
+        tree = new JTree(rootNode);
+        tree.setRootVisible(true);
+        JScrollPane treeScrollPane = new JScrollPane(tree);
+
+        add(description, "cell 0 0");
+        add(treeScrollPane, "cell 0 1,grow");
+    }
+
+
+    public void update() {
+        dataSetTreeModel.update();
+    }
 
 }

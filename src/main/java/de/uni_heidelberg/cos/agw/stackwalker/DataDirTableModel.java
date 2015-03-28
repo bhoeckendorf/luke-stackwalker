@@ -19,13 +19,12 @@
 
 package de.uni_heidelberg.cos.agw.stackwalker;
 
+import de.uni_heidelberg.cos.agw.stackwalker.ui.DataDirPanel;
+
+import javax.swing.table.AbstractTableModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
-import de.uni_heidelberg.cos.agw.stackwalker.ui.DataDirPanel;
 
 
 /**
@@ -35,107 +34,107 @@ import de.uni_heidelberg.cos.agw.stackwalker.ui.DataDirPanel;
 @SuppressWarnings("serial")
 public class DataDirTableModel extends AbstractTableModel {
 
-	/**
-	 * List of {@link DataDir} that are contained in the model,
-	 * also serves as the model's data structure.
-	 */
-	private static final List<DataDir> dataDirs = new ArrayList<DataDir>();
+    /**
+     * List of {@link DataDir} that are contained in the model,
+     * also serves as the model's data structure.
+     */
+    private static final List<DataDir> dataDirs = new ArrayList<DataDir>();
 
-	private final String[] columnHeaders = {"Path", "Recursive?"};
-	
-
-	/**
-	 * Returns a list of the {@link DataDir}s held by the model.
-	 * 
-	 * @return a list of the {@code DataDir}s held by the model
-	 */
-	public static List<DataDir> getDataDirs() {
-		return dataDirs;
-	}
-	
-
-	/**
-	 * Inserts {@link DataDir} (a new row) into the table model.
-	 * Always appends the new row to the end of the table model
-	 * (the bottom of the table).
-	 * 
-	 * @param dataDir the {@code DataDir} to be inserted
-	 */
-	public void insertRow(DataDir dataDir) {
-		dataDirs.add(dataDir);
-		final int lastRowIdx = getRowCount() - 1;
-		fireTableRowsInserted(lastRowIdx, lastRowIdx);
-	}
-	
-
-	/**
-	 * Removes a row (a {@link DataDir}) from the table model.
-
-	 * @param rowIdx the {@code DataDir}'s row index
-	 */
-	public void removeRow(final int rowIdx) {
-		dataDirs.remove(rowIdx);
-		fireTableRowsDeleted(rowIdx, rowIdx);
-	}
-	
-	
-	@Override
-	public int getColumnCount() {
-		return 2;
-	}
-	
-	
-	@Override
-	public String getColumnName(final int colIdx) {
-		return columnHeaders[colIdx];
-	}
-	
-	
-	@Override
-	public Class<?> getColumnClass(final int colIdx) {
-		return getValueAt(0, colIdx).getClass();
-	}
-	
-	
-	@Override
-	public int getRowCount() {
-		return dataDirs.size();
-	}
+    private final String[] columnHeaders = {"Path", "Recursive?"};
 
 
-	@Override
-	public Object getValueAt(final int rowIdx, final int colIdx) {
-		DataDir dir = dataDirs.get(rowIdx);
-		switch (colIdx) {
-		case 0:
-			return dir.getPath();
-		case 1:
-			return dir.isRecursive();
-		default:
-			assert false;
-		}
-		return null;
-	}
-	
+    /**
+     * Returns a list of the {@link DataDir}s held by the model.
+     *
+     * @return a list of the {@code DataDir}s held by the model
+     */
+    public static List<DataDir> getDataDirs() {
+        return dataDirs;
+    }
 
-	@Override
-	public boolean isCellEditable(final int rowIdx, final int colIdx) {
-		return true;
-	}
-	
-	
-	@Override
-	public void setValueAt(Object value, final int rowIdx, final int colIdx) {
-		DataDir dir = dataDirs.get(rowIdx);
-		switch (colIdx) {
-		case 0:
-			dir.setPath(new File(value.toString()));
-		case 1:
-			dir.setRecursive(Boolean.valueOf(value.toString()));
-		default:
-			assert false;
-		}
-		fireTableCellUpdated(rowIdx, colIdx);
-	}
+
+    /**
+     * Inserts {@link DataDir} (a new row) into the table model.
+     * Always appends the new row to the end of the table model
+     * (the bottom of the table).
+     *
+     * @param dataDir the {@code DataDir} to be inserted
+     */
+    public void insertRow(DataDir dataDir) {
+        dataDirs.add(dataDir);
+        final int lastRowIdx = getRowCount() - 1;
+        fireTableRowsInserted(lastRowIdx, lastRowIdx);
+    }
+
+
+    /**
+     * Removes a row (a {@link DataDir}) from the table model.
+     *
+     * @param rowIdx the {@code DataDir}'s row index
+     */
+    public void removeRow(final int rowIdx) {
+        dataDirs.remove(rowIdx);
+        fireTableRowsDeleted(rowIdx, rowIdx);
+    }
+
+
+    @Override
+    public int getColumnCount() {
+        return 2;
+    }
+
+
+    @Override
+    public String getColumnName(final int colIdx) {
+        return columnHeaders[colIdx];
+    }
+
+
+    @Override
+    public Class<?> getColumnClass(final int colIdx) {
+        return getValueAt(0, colIdx).getClass();
+    }
+
+
+    @Override
+    public int getRowCount() {
+        return dataDirs.size();
+    }
+
+
+    @Override
+    public Object getValueAt(final int rowIdx, final int colIdx) {
+        DataDir dir = dataDirs.get(rowIdx);
+        switch (colIdx) {
+            case 0:
+                return dir.getPath();
+            case 1:
+                return dir.isRecursive();
+            default:
+                assert false;
+        }
+        return null;
+    }
+
+
+    @Override
+    public boolean isCellEditable(final int rowIdx, final int colIdx) {
+        return true;
+    }
+
+
+    @Override
+    public void setValueAt(Object value, final int rowIdx, final int colIdx) {
+        DataDir dir = dataDirs.get(rowIdx);
+        switch (colIdx) {
+            case 0:
+                dir.setPath(new File(value.toString()));
+            case 1:
+                dir.setRecursive(Boolean.valueOf(value.toString()));
+            default:
+                assert false;
+        }
+        fireTableCellUpdated(rowIdx, colIdx);
+    }
 
 }
