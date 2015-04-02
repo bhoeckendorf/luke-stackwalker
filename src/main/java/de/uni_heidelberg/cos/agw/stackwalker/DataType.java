@@ -1,24 +1,7 @@
-/*
- * This file is part of Luke Stackwalker.
- * https://github.com/bhoeckendorf/luke-stackwalker
- * 
- * Copyright 2012 Burkhard Hoeckendorf <b.hoeckendorf at web dot de>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uni_heidelberg.cos.agw.stackwalker;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A data parameter that is represented in the file names via a tag
@@ -41,6 +24,9 @@ package de.uni_heidelberg.cos.agw.stackwalker;
  */
 public class DataType {
 
+    public static final List<DataType> LIST = new ArrayList<DataType>();
+    protected int blockStart = -1;
+    protected int blockSize = -1;
     /**
      * the name of the DataType.
      */
@@ -55,25 +41,43 @@ public class DataType {
      * whether or not the DataType is activated and will be used to compute
      * the data file hierarchy
      */
-    private boolean active = true;
+    private boolean isActive = true;
 
-    /**
-     * whether or not only a range of DataType values will be considered
-     */
-    private boolean rangeActive = false;
-
-    // TODO: add JavaDoc for all params and clarify it a bit more.
-    private int rangeStart = 0;
-    private int rangeEnd = 0;
-    private int interval = 1;
-
+    private boolean hasFixedBlockStart = false;
+    private boolean hasFixedBlockSize = false;
+    private boolean isInitialized = true;
 
     public DataType() {
     }
 
-
-    public DataType(final String name) {
+    public DataType(final String name, final String fileNameTag) {
         setName(name);
+        setFileNameTag(fileNameTag);
+    }
+
+    public static boolean initializeAll(final String template) {
+        for (final DataType type : LIST) {
+            if (!type.isActive()) {
+                continue;
+            }
+            if (!type.initialize(template)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean initializeAll(final List<String> templates) {
+        for (final String template : templates) {
+            if (initializeAll(template)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getLevel() {
+        return LIST.indexOf(this);
     }
 
     /**
@@ -87,42 +91,6 @@ public class DataType {
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    /**
-     * Returns whether or not this DataType is used for processing.
-     *
-     * @return whether or not this DataType is used for processing
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * Sets whether or not this DataType is used for processing.
-     *
-     * @param state whether or not this DataType is used for processing
-     */
-    public void setActive(final boolean state) {
-        active = state;
-    }
-
-    /**
-     * Returns whether or not the processing is limited by a set index range.
-     *
-     * @return whether or not the processing is limited by a set index range
-     */
-    public boolean isRangeActive() {
-        return rangeActive;
-    }
-
-    /**
-     * Sets whether or not the processing is limited by a set index range.
-     *
-     * @param state whether or not the processing is limited by a set index range
-     */
-    public void setRangeActive(final boolean state) {
-        rangeActive = state;
     }
 
     /**
@@ -141,64 +109,123 @@ public class DataType {
      */
     public void setFileNameTag(final String tag) {
         fileNameTag = tag;
+        blockStart = -1;
+        blockSize = -1;
+        isInitialized = false;
     }
 
     /**
-     * Returns the first index that will be processed.
+     * Returns whether or not this DataType is used for processing.
      *
-     * @return the first index thet will be processed
+     * @return whether or not this DataType is used for processing
      */
-    public int getRangeStart() {
-        return rangeStart;
+    public boolean isActive() {
+        return isActive;
     }
 
     /**
-     * Sets the first index that will be processed.
+     * Sets whether or not this DataType is used for processing.
      *
-     * @param start the first index that will be processed
+     * @param state whether or not this DataType is used for processing
      */
-    public void setRangeStart(final int start) {
-        rangeStart = start;
-        if (rangeStart > rangeEnd)
-            rangeEnd = rangeStart;
+    public void setActive(final boolean state) {
+        isActive = state;
     }
 
-    /**
-     * Returns the final index that will be processed.
-     *
-     * @return the end of the range
-     */
-    public int getRangeEnd() {
-        return rangeEnd;
+    public boolean hasFixedNumBlockSize() {
+        return hasFixedBlockSize;
     }
 
-    /**
-     * Sets the final index that will be processed.
-     *
-     * @param end the final index that will be processed
-     */
-    public void setRangeEnd(final int end) {
-        rangeEnd = end;
-        if (rangeEnd < rangeStart)
-            rangeStart = rangeEnd;
+    public void setFixedNumBlockSize(final boolean state) {
+        if (state == hasFixedBlockSize)
+            return;
+        hasFixedBlockSize = state;
+        blockStart = -1;
+        blockSize = -1;
+        isInitialized = false;
     }
 
-    /**
-     * Returns the interval for traversing over this {@code DataType}'s indices.
-     *
-     * @return the interval for traversing over this {@code DataType}'s indices
-     */
-    public int getInterval() {
-        return interval;
+    public boolean hasFixedNumBlockStart() {
+        return hasFixedBlockStart;
     }
 
-    /**
-     * Sets the interval for traversing over this {@code DataType}'s indices.
-     *
-     * @param interval the interval for traversing over this {@code DataType}'s indices
-     */
-    public void setInterval(final int interval) {
-        this.interval = interval;
+    public void setFixedNumBlockStart(final boolean state) {
+        if (state == hasFixedBlockStart)
+            return;
+        hasFixedBlockStart = state;
+        blockStart = -1;
+        blockSize = -1;
+        isInitialized = false;
     }
 
+    public boolean isInitialized() {
+        return isInitialized;
+    }
+
+    public boolean initialize(final String template) {
+        if (isInitialized)
+            return true;
+
+        if (!hasFixedBlockStart && !hasFixedBlockSize) {
+            isInitialized = true;
+            return true;
+        }
+
+        int start = template.lastIndexOf(fileNameTag);
+        while (start != -1) {
+            int size = 0;
+            for (final char c : template.substring(start + fileNameTag.length()).toCharArray()) {
+                if (Character.isDigit(c)) {
+                    size++;
+                } else {
+                    break;
+                }
+            }
+            if (size > 0) {
+                if (hasFixedBlockStart) {
+                    blockStart = start;
+                }
+                if (hasFixedBlockSize)
+                    blockSize = fileNameTag.length() + size;
+                isInitialized = true;
+                return true;
+            }
+            start = template.lastIndexOf(fileNameTag, start);
+        }
+        return false;
+    }
+
+    // expects the type to be initialized!
+    public int getValue(final String template) {
+        int start;
+        if (hasFixedBlockStart && fileNameTag.equals(template.substring(blockStart, blockStart + fileNameTag.length()))) {
+            start = blockStart;
+        } else {
+            start = template.lastIndexOf(fileNameTag);
+        }
+
+        while (start != -1) {
+            final int numBlockStart = start + fileNameTag.length();
+
+            if (hasFixedBlockSize) {
+                try {
+                    return Integer.parseInt(template.substring(numBlockStart, start + blockSize));
+                } catch (NumberFormatException e) {
+                }
+            }
+
+            int size = 0;
+            for (final char c : template.substring(numBlockStart).toCharArray()) {
+                if (Character.isDigit(c)) {
+                    size++;
+                } else if (size > 0) {
+                    return Integer.parseInt(template.substring(numBlockStart, numBlockStart + size));
+                }
+            }
+
+            start = template.lastIndexOf(fileNameTag, start);
+        }
+
+        return -1;
+    }
 }
