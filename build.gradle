@@ -15,9 +15,24 @@ jar {
 dependencies {
     compile 'commons-io:commons-io:+'
     compile 'com.miglayout:miglayout-swing:+'
+    compile 'sc.fiji:bigdataviewer-core:+'
+    compile 'sc.fiji:SPIM_Registration:+'
+    compile 'org.janelia.simview:klb:+'
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { // ImageJ Releases
+        url 'http://maven.imagej.net/content/repositories/releases'
+    }
+//        maven { // ImageJ Snapshots
+//            url 'http://maven.imagej.net/content/repositories/snapshots'
+//        }
+//        maven { // ImageJ 3rdparty
+//            url 'http://maven.imagej.net/content/repositories/thirdparty'
+//        }
+//        maven { // ImageJ Public
+//            url 'http://maven.imagej.net/content/repositories/public'
+//        }
 }

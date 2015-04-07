@@ -1,5 +1,6 @@
 package de.uni_heidelberg.cos.agw.stackwalker.ui;
 
+import bdv.BigDataViewer;
 import de.uni_heidelberg.cos.agw.stackwalker.DataFileTreeModel;
 import net.miginfocom.swing.MigLayout;
 
@@ -47,6 +48,8 @@ public class MainFrame extends JFrame implements ActionListener {
         final JButton source = (JButton) event.getSource();
         if (source == actionPanel.updateDataFileHierarchyButton) {
             dataFileTreeModel.populate(dataDirPanel.dataDirTableModel.dataDirs, dataDirPanel.getFilter());
+        } else if (source == actionPanel.startButton) {
+
         }
     }
 }

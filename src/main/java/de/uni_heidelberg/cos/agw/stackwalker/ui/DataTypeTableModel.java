@@ -13,9 +13,7 @@ public class DataTypeTableModel extends AbstractTableModel {
     private final List<DataTypeModelPreset> presets = new ArrayList<DataTypeModelPreset>();
     private final String[] columnHeaders = {
             "Name",
-            "Filename tag",
-            "Fixed start",
-            "Fixed size"
+            "Filename tag"
     };
     private int currentPresetIdx = 0;
 
@@ -111,10 +109,6 @@ public class DataTypeTableModel extends AbstractTableModel {
                 return type.getName();
             case 1:
                 return type.getFileNameTag();
-            case 2:
-                return type.hasFixedNumBlockStart();
-            case 3:
-                return type.hasFixedNumBlockSize();
             default:
                 assert false;
                 return null;
@@ -136,14 +130,9 @@ public class DataTypeTableModel extends AbstractTableModel {
             case 1:
                 type.setFileNameTag(value.toString());
                 break;
-            case 2:
-                type.setFixedNumBlockStart(Boolean.parseBoolean(value.toString()));
-                break;
-            case 3:
-                type.setFixedNumBlockSize(Boolean.parseBoolean(value.toString()));
-                break;
             default:
                 assert false;
+                break;
         }
         fireTableCellUpdated(rowIndex, colIndex);
     }
