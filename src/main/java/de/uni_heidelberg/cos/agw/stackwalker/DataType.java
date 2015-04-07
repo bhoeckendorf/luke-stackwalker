@@ -1,5 +1,7 @@
 package de.uni_heidelberg.cos.agw.stackwalker;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class DataType {
         setFileNameTag(fileNameTag);
     }
 
-    public static boolean initializeAll(final String template) {
+    private static boolean init(final String template) {
         for (final DataType type : LIST) {
             if (!type.isActive()) {
                 continue;
@@ -67,10 +69,40 @@ public class DataType {
         return true;
     }
 
-    public static boolean initializeAll(final List<String> templates) {
-        for (final String template : templates) {
-            if (initializeAll(template)) {
+    private static boolean initRecursive(final File dirPath, final FileFilter filter) {
+        final File[] files = dirPath.listFiles();
+        if (files == null) {
+            return false;
+        }
+        for (final File file : files) {
+            if (file.isDirectory() && initRecursive(file, filter)) {
                 return true;
+            } else {
+                if (filter.accept(file) && init(file.getAbsolutePath())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean initNonRecursive(final File dirPath, final FileFilter filter) {
+        for (final File file : dirPath.listFiles(filter)) {
+            if (init(file.getAbsolutePath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean initialize(final List<DataDir> dataDirs) {
+        for (final DataDir dir : dataDirs) {
+            if (dir.isRecursive()) {
+                if (initRecursive(new File(dir.getDirPath()), dir.getFilter()))
+                    return true;
+            } else {
+                if (initNonRecursive(new File(dir.getDirPath()), dir.getFilter()))
+                    return true;
             }
         }
         return false;

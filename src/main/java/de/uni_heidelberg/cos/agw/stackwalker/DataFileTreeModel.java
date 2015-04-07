@@ -80,6 +80,10 @@ public class DataFileTreeModel extends DefaultTreeModel {
      */
     public void populate(final List<DataDir> dataDirs) {
         clear();
+        if (!DataType.initialize(dataDirs)) {
+            System.out.println("Failed to initialize DataTypes.");
+            return;
+        }
         for (final DataDir dir : dataDirs) {
             if (dir.isRecursive()) {
                 addRecursive(new File(dir.getDirPath()), dir.getFilter());
