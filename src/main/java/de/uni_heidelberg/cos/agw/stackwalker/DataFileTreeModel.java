@@ -78,17 +78,17 @@ public class DataFileTreeModel extends DefaultTreeModel {
      * Updates the model according to the current settings in the UI.
      * Then updates the UI.
      */
-    public void populate(final List<DataDir> dataDirs) {
+    public void populate(final List<DataDir> dataDirs, final FileFilter globalFilter) {
         clear();
-        if (!DataType.initialize(dataDirs)) {
+        if (!DataType.initialize(dataDirs, globalFilter)) {
             System.out.println("Failed to initialize DataTypes.");
             return;
         }
         for (final DataDir dir : dataDirs) {
             if (dir.isRecursive()) {
-                addRecursive(new File(dir.getDirPath()), dir.getFilter());
+                addRecursive(new File(dir.getDirPath()), globalFilter);
             } else {
-                addNonRecursive(new File(dir.getDirPath()), dir.getFilter());
+                addNonRecursive(new File(dir.getDirPath()), globalFilter);
             }
         }
         final DataFileTreeNode[] path = {rootNode};

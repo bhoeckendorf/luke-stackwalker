@@ -95,13 +95,13 @@ public class DataType {
         return false;
     }
 
-    public static boolean initialize(final List<DataDir> dataDirs) {
+    public static boolean initialize(final List<DataDir> dataDirs, final FileFilter globalFilter) {
         for (final DataDir dir : dataDirs) {
             if (dir.isRecursive()) {
-                if (initRecursive(new File(dir.getDirPath()), dir.getFilter()))
+                if (initRecursive(new File(dir.getDirPath()), globalFilter))
                     return true;
             } else {
-                if (initNonRecursive(new File(dir.getDirPath()), dir.getFilter()))
+                if (initNonRecursive(new File(dir.getDirPath()), globalFilter))
                     return true;
             }
         }

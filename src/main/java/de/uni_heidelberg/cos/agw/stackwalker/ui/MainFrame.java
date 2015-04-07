@@ -46,7 +46,7 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(final ActionEvent event) {
         final JButton source = (JButton) event.getSource();
         if (source == actionPanel.updateDataFileHierarchyButton) {
-            dataFileTreeModel.populate(dataDirPanel.dataDirTableModel.dataDirs);
+            dataFileTreeModel.populate(dataDirPanel.dataDirTableModel.dataDirs, dataDirPanel.getFilter());
         }
     }
 }
