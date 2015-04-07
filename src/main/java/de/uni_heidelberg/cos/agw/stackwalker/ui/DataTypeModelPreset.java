@@ -69,7 +69,6 @@ public class DataTypeModelPreset {
         DataType dataType = new DataType();
         dataType.setName(name);
         dataType.setFileNameTag(tag);
-        dataType.setActive(active);
         return dataType;
     }
 }

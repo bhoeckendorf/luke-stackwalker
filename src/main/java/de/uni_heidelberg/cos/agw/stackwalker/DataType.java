@@ -39,12 +39,6 @@ public class DataType {
      */
     private String fileNameTag = "";
 
-    /**
-     * whether or not the DataType is activated and will be used to compute
-     * the data file hierarchy
-     */
-    private boolean isActive = true;
-
     private boolean hasFixedBlockStart = false;
     private boolean hasFixedBlockSize = false;
     private boolean isInitialized = true;
@@ -59,9 +53,6 @@ public class DataType {
 
     private static boolean init(final String template) {
         for (final DataType type : LIST) {
-            if (!type.isActive()) {
-                continue;
-            }
             if (!type.initialize(template)) {
                 return false;
             }
@@ -144,24 +135,6 @@ public class DataType {
         blockStart = -1;
         blockSize = -1;
         isInitialized = false;
-    }
-
-    /**
-     * Returns whether or not this DataType is used for processing.
-     *
-     * @return whether or not this DataType is used for processing
-     */
-    public boolean isActive() {
-        return isActive;
-    }
-
-    /**
-     * Sets whether or not this DataType is used for processing.
-     *
-     * @param state whether or not this DataType is used for processing
-     */
-    public void setActive(final boolean state) {
-        isActive = state;
     }
 
     public boolean hasFixedNumBlockSize() {

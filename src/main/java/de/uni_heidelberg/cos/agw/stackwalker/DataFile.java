@@ -48,9 +48,6 @@ public class DataFile {
         final String template = file.getAbsolutePath();
         final Map<String, Integer> values = new HashMap<String, Integer>();
         for (final DataType type : DataType.LIST) {
-            if (!type.isActive()) {
-                continue;
-            }
             final int value = type.getValue(template);
             if (value == -1) {
                 return null;

@@ -12,7 +12,6 @@ public class DataTypeTableModel extends AbstractTableModel {
     protected final DefaultComboBoxModel<String> presetComboBoxModel = new DefaultComboBoxModel<String>();
     private final List<DataTypeModelPreset> presets = new ArrayList<DataTypeModelPreset>();
     private final String[] columnHeaders = {
-            "Active",
             "Name",
             "Filename tag",
             "Fixed start",
@@ -109,14 +108,12 @@ public class DataTypeTableModel extends AbstractTableModel {
         final DataType type = DataType.LIST.get(rowIndex);
         switch (colIndex) {
             case 0:
-                return type.isActive();
-            case 1:
                 return type.getName();
-            case 2:
+            case 1:
                 return type.getFileNameTag();
-            case 3:
+            case 2:
                 return type.hasFixedNumBlockStart();
-            case 4:
+            case 3:
                 return type.hasFixedNumBlockSize();
             default:
                 assert false;
@@ -134,18 +131,15 @@ public class DataTypeTableModel extends AbstractTableModel {
         final DataType type = DataType.LIST.get(rowIndex);
         switch (colIndex) {
             case 0:
-                type.setActive(Boolean.parseBoolean(value.toString()));
-                break;
-            case 1:
                 type.setName(value.toString());
                 break;
-            case 2:
+            case 1:
                 type.setFileNameTag(value.toString());
                 break;
-            case 3:
+            case 2:
                 type.setFixedNumBlockStart(Boolean.parseBoolean(value.toString()));
                 break;
-            case 4:
+            case 3:
                 type.setFixedNumBlockSize(Boolean.parseBoolean(value.toString()));
                 break;
             default:

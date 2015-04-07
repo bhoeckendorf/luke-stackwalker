@@ -53,9 +53,6 @@ public class DataFileTreeModel extends DefaultTreeModel {
     public void add(final DataFile dataFile) {
         DataFileTreeNode currentParent = rootNode;
         for (final DataType type : DataType.LIST) {
-            if (!type.isActive()) {
-                continue;
-            }
             final int value = dataFile.getValue(type);
             currentParent = currentParent.add(type, value);
         }
@@ -65,13 +62,48 @@ public class DataFileTreeModel extends DefaultTreeModel {
     public DataFile get(final Map<DataType, Integer> values) {
         DataFileTreeNode current = rootNode;
         for (final DataType type : DataType.LIST) {
-            if (!type.isActive()) {
-                continue;
-            }
             final int value = values.get(type);
             current = current.getChildrenMap().get(value);
         }
         return current.getDataFile();
+    }
+
+    public int getFirst(final DataType type) {
+        DataFileTreeNode current = rootNode;
+        for (final DataType t : DataType.LIST) {
+            current = current.getChildrenList().get(0);
+            if (t == type) {
+                return current.value;
+            }
+        }
+        return -1;
+    }
+
+    public int getLast(final DataType type) {
+        DataFileTreeNode current = rootNode;
+        for (final DataType t : DataType.LIST) {
+            current = current.getChildrenList().get(current.getChildrenList().size() - 1);
+            if (t == type) {
+                return current.value;
+            }
+        }
+        return -1;
+    }
+
+    public DataFile getFirstDataFile() {
+        DataFileTreeNode current = rootNode;
+        for (final DataType t : DataType.LIST) {
+            current = current.getChildrenList().get(0);
+        }
+        return current.getChildrenList().get(0).getDataFile();
+    }
+
+    public DataFile getLastDataFile() {
+        DataFileTreeNode current = rootNode;
+        for (final DataType t : DataType.LIST) {
+            current = current.getChildrenList().get(current.getChildrenList().size() - 1);
+        }
+        return current.getChildrenList().get(current.getChildrenList().size() - 1).getDataFile();
     }
 
     /**
