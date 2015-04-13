@@ -14,7 +14,7 @@ public class DataFileHierarchyPanel extends JPanel {
     public DataFileHierarchyPanel(DataFileTreeModel dataFileTreeModel) {
         this.dataFileTreeModel = dataFileTreeModel;
         tree = new JTree();
-        tree.setRootVisible(true);
+        tree.setRootVisible(false);
         tree.setModel(this.dataFileTreeModel);
 
         description = new JLabel();

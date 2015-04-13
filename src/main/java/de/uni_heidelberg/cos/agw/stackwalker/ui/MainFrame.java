@@ -1,6 +1,5 @@
 package de.uni_heidelberg.cos.agw.stackwalker.ui;
 
-import bdv.BigDataViewer;
 import de.uni_heidelberg.cos.agw.stackwalker.DataFileTreeModel;
 import net.miginfocom.swing.MigLayout;
 

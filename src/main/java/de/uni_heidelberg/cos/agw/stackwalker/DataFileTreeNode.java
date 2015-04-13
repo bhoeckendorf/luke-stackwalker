@@ -10,8 +10,8 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
     private final DataType dataType;
     private final DataFile dataFile;
     private final DataFileTreeNode parent;
-    private final Map<Integer, DataFileTreeNode> childrenMap = new HashMap<Integer, DataFileTreeNode>();
-    private List<DataFileTreeNode> childrenList = new ArrayList<DataFileTreeNode>();
+    private final Map<Integer, DataFileTreeNode> childrenMap;
+    private List<DataFileTreeNode> lazyList;
 
     public DataFileTreeNode() {
         this.parent = null;
@@ -19,22 +19,25 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
         dataType = null;
         value = -1;
         dataFile = null;
+        childrenMap = new HashMap<Integer, DataFileTreeNode>();
     }
 
     public DataFileTreeNode(final DataFileTreeNode parent, final DataType type, final int value) {
-        this.parent = null;
+        this.parent = parent;
         nodeType = Type.DATATYPE;
         dataType = type;
         this.value = value;
         dataFile = null;
+        childrenMap = new HashMap<Integer, DataFileTreeNode>();
     }
 
     public DataFileTreeNode(final DataFileTreeNode parent, final DataFile dataFile) {
-        this.parent = null;
+        this.parent = parent;
         nodeType = Type.DATAFILE;
         dataType = null;
         value = -1;
         this.dataFile = dataFile;
+        childrenMap = null;
     }
 
     public DataFile getDataFile() {
@@ -44,7 +47,11 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
     }
 
     public List<DataFileTreeNode> getChildrenList() {
-        return childrenList;
+        if (lazyList == null) {
+            lazyList = new ArrayList<DataFileTreeNode>(childrenMap.values());
+            Collections.sort(lazyList);
+        }
+        return lazyList;
     }
 
     public Map<Integer, DataFileTreeNode> getChildrenMap() {
@@ -57,14 +64,14 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
         } else {
             final DataFileTreeNode node = new DataFileTreeNode(this, type, value);
             childrenMap.put(value, node);
-            childrenList.add(node);
-            Collections.sort(childrenList);
+            lazyList = null;
             return node;
         }
     }
 
     public void add(final DataFile dataFile) {
-        childrenList.add(new DataFileTreeNode(this, dataFile));
+        childrenMap.put(childrenMap.size(), new DataFileTreeNode(this, dataFile));
+        lazyList = null;
     }
 
     @Override
@@ -79,7 +86,7 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
 
     @Override
     public Enumeration<DataFileTreeNode> children() {
-        return Collections.enumeration(childrenList);
+        return Collections.enumeration(getChildrenList());
     }
 
     @Override
@@ -89,17 +96,17 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
 
     @Override
     public DataFileTreeNode getChildAt(final int index) {
-        return childrenList.get(index);
+        return getChildrenList().get(index);
     }
 
     @Override
     public int getChildCount() {
-        return childrenList.size();
+        return childrenMap.size();
     }
 
     @Override
     public int getIndex(final TreeNode node) {
-        return childrenList.indexOf(this);
+        return getChildrenList().indexOf(this);
     }
 
     @Override
@@ -109,16 +116,12 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
 
     @Override
     public boolean isLeaf() {
-        return childrenList.isEmpty();
+        return childrenMap == null || childrenMap.isEmpty();
     }
 
     @Override
     public int compareTo(final DataFileTreeNode other) {
-        if (this.nodeType.ordinal() > other.nodeType.ordinal()) {
-            return 1;
-        } else if (this.nodeType.ordinal() < other.nodeType.ordinal()) {
-            return -1;
-        } else {
+        if (this.nodeType == other.nodeType) {
             if (this.nodeType == Type.DATATYPE) {
                 if (this.value > other.value) {
                     return 1;
@@ -127,9 +130,17 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
                 } else {
                     return 0;
                 }
-            } else {
+            } else if (this.nodeType == Type.DATAFILE) {
                 return this.dataFile.getFilePath().compareTo(other.dataFile.getFilePath());
+            } else {
+                return 0;
             }
+        } else if (this.nodeType.ordinal() > other.nodeType.ordinal()) {
+            return 1;
+        } else if (this.nodeType.ordinal() < other.nodeType.ordinal()) {
+            return -1;
+        } else {
+            return 0;
         }
     }
 

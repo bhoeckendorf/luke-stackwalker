@@ -9,8 +9,8 @@ public class ActionPanel extends JPanel {
 
     private final String[] actions = {"View in Big Data Viewer"};
     protected JButton updateDataFileHierarchyButton,
-//            checkDataSetConsistencyButton,
-        startButton;
+    //            checkDataSetConsistencyButton,
+    startButton;
     private JComboBox actionsComboBox;
 
     public ActionPanel(final ActionListener mainListener) {

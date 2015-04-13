@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.List;
 
 public class DataDirPanel extends JPanel implements ActionListener {
 
@@ -25,7 +24,7 @@ public class DataDirPanel extends JPanel implements ActionListener {
         removeDataDirButton.addActionListener(this);
 
         setLayout(new MigLayout("", "[][grow][][]", "[][][][grow]"));
-        add(new JLabel("File name extensions"), "cell 0 0");
+        add(new JLabel("File extensions"), "cell 0 0");
         add(extensionsEdit, "cell 1 0 3 1,grow");
         add(new JLabel("File name filter"), "cell 0 1");
         add(filterEdit, "cell 1 1 3 1,grow");
@@ -45,26 +44,40 @@ public class DataDirPanel extends JPanel implements ActionListener {
 
     public FileFilter getFilter() {
         return new FileFilter() {
+
             private final String[] extensions = extensionsEdit.getText().trim().split("\\s+");
             private final String[] names = filterEdit.getText().trim().split("\\s+");
+
             @Override
-            public boolean accept(final File pathname) {
-                final String fn = pathname.getAbsolutePath();
+            public boolean accept(final File file) {
+                final String filePath = file.getAbsolutePath();
+
+                boolean extMatches = false;
                 for (final String ext : extensions) {
-                    if (!fn.endsWith(ext)) {
-                        return false;
+                    if (filePath.endsWith(ext)) {
+                        extMatches = true;
+                        break;
                     }
                 }
+                if (!extMatches) {
+                    return false;
+                }
+
                 for (final String name : names) {
-                    if (name.startsWith("-") && fn.contains(name.substring(1))) {
-                        return false;
-                    } else if (!fn.contains(name)) {
+                    if (name.isEmpty())
+                        continue;
+                    if (name.startsWith("-")) {
+                        if (filePath.contains(name.substring(1))) {
+                            return false;
+                        }
+                    } else if (!filePath.contains(name)) {
                         return false;
                     }
                 }
                 return true;
             }
         };
+
     }
 
     @Override

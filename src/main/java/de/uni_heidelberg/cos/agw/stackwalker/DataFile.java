@@ -1,102 +1,94 @@
 package de.uni_heidelberg.cos.agw.stackwalker;
 
-import de.uni_heidelberg.cos.agw.stackwalker.ui.DataTypeTableModel;
+import com.sun.istack.internal.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Holds the information associated with a data file. Its location,
- * DataTypes and values.
+ * Holds the information associated with a data file.
+ * Its location, DataTypes and values.
  */
 public class DataFile {
 
     /**
-     * the {@code File} instance of the DataFile
+     * file system path to data file
      */
-    public final File file;
+    public final String filePath;
 
     /**
-     * the {@link DataType} values, as key-value pairs, with
-     * {@link DataType #getName()} as key
+     * the {@link DataType} values, as key-value pairs,
+     * with {@link DataType#getName()} as key
      */
     private final Map<String, Integer> fileNameTagValues;
 
     /**
-     * Constructs a new DataFile. Is private and to be used via {@link DataFile#make(String, boolean, File)}.
+     * Constructs a new DataFile.
+     * To be used via {@link #create(File)}.
      *
-     * @param dataDir the data folder
-     * @param file    the data file
-     * @see #make(String, boolean, File)
+     * @param filePath          file system path to data file
+     * @param fileNameTagValues data type values
+     * @see #create(File)
      */
-    private DataFile(final File file, final Map<String, Integer> fileNameTagValues) {
-        this.file = file;
+    private DataFile(final String filePath, final Map<String, Integer> fileNameTagValues) {
+        this.filePath = filePath;
         this.fileNameTagValues = fileNameTagValues;
     }
 
     /**
-     * Returns a new {@code DataFile} instance or {@code null} if the
-     * location can't be read from or not all file name tags are present
-     * in the file name.
+     * Returns a new {@code DataFile} instance or {@code null} if not
+     * all file name tags are present in the file name.
      *
-     * @param dataDir the data folder
-     * @param file    the data file
-     * @return a new DataFile instance, or {@code null} file is non-existent or doesn't contain all file name tags the activated {@link DataType}s in {@link DataTypeTableModel}).
+     * @param file file system path
+     * @return {@code DataFile} instance or {@code null}
      */
+    @Nullable
     public static DataFile create(final File file) {
-        final String template = file.getAbsolutePath();
+        return create(file.getAbsolutePath());
+    }
+
+    /**
+     * Returns a new {@code DataFile} instance or {@code null} if not
+     * all file name tags are present in the file name.
+     *
+     * @param filePath file system path
+     * @return {@code DataFile} instance or {@code null}
+     */
+    @Nullable
+    public static DataFile create(final String filePath) {
         final Map<String, Integer> values = new HashMap<String, Integer>();
         for (final DataType type : DataType.LIST) {
-            final int value = type.getValue(template);
+            final int value = type.getValue(filePath);
             if (value == -1) {
                 return null;
             }
             values.put(type.getName(), value);
         }
-
-//        for (final String key : values.keySet()) {
-//            System.out.println(key + " " + values.get(key));
-//        }
-
-        return new DataFile(file, values);
+        return new DataFile(filePath, values);
     }
 
     /**
-     * Returns the file's path.
+     * Returns the file system path of the data file.
      *
-     * @return the file's path
-     * @see #getFileName()
+     * @return file system path
      */
     public String getFilePath() {
-        return file.getAbsolutePath();
+        return filePath;
     }
 
     /**
-     * Returns the file name.
+     * Returns the value of the given {@link DataType}
      *
-     * @return the file name
-     * @see #getFilePath()
+     * @param type data type
+     * @return data type value
      */
-    public String getFileName() {
-        return file.getName();
-    }
-
     public int getValue(final DataType type) {
         return fileNameTagValues.get(type.getName());
     }
 
-    /**
-     * Returns the value of a {@link DataType} (by name) in a DataFile's file name, or {@code null}.
-     * Example: file name = footag123bar, {@link DataType#getFileNameTag()} = tag, return = 123
-     *
-     * @param name a DataType's file name tag ({@link DataType#getFileNameTag()})
-     * @return the value of a DataType (by name) in a DataFile's file name, or {@code null}
-     * @see #getValue(int)
-     * @see DataType
-     * @see DataTypeTableModel
-     */
-    public int getValue(final String name) {
-        return fileNameTagValues.get(name);
+    @Override
+    public String toString() {
+        return filePath;
     }
 }

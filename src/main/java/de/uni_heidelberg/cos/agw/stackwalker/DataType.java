@@ -1,28 +1,25 @@
 package de.uni_heidelberg.cos.agw.stackwalker;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A data parameter that is represented in the file names via a tag
- * followed by a value.
- * <p>
- * <h4>Example</h4>
- * <p>A measurement over time of multiple channels, the data is split into
+ * A data parameter that is represented in file system path and/or
+ * file name via a tag followed by a numeric value.
+ * <p/>
+ * <p>Example: A measurement over time of multiple channels, the data is split into
  * single files for each combination of DataTypes.</p>
  * <ul>
- * <li>Experiment1Time001Chn1.csv</li>
- * <li>Experiment1Time001Chn2.csv</li>
- * <li>Experimene1Time002Chn1.csv</li>
- * <li>Experiment1Time002Chn2.csv</li>
+ * <li>{@code Experiment1Time001Chn1.csv}</li>
+ * <li>{@code Experiment1Time001Chn2.csv}</li>
+ * <li>{@code Experiment1Time002Chn1.csv}</li>
+ * <li>{@code Experiment1Time002Chn2.csv}</li>
  * <li>...
  * </ul>
- * <p>
- * <p>In this example, DataTypes are Timepoint and Channel, their file name
+ * <p/>
+ * <p>In this example, DataTypes are Time and Channel, their file name
  * tags are "Time" and "Chn", respectively. Their value is the value of
  * all digits directly following the file name tags.</p>
  */
