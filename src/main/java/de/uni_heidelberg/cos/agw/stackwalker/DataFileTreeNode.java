@@ -10,8 +10,7 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
     private final DataType dataType;
     private final DataFile dataFile;
     private final DataFileTreeNode parent;
-    private final Map<Integer, DataFileTreeNode> childrenMap;
-    private List<DataFileTreeNode> lazyList;
+    private final NavigableMap<Integer, DataFileTreeNode> childrenMap;
 
     public DataFileTreeNode() {
         this.parent = null;
@@ -19,7 +18,7 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
         dataType = null;
         value = -1;
         dataFile = null;
-        childrenMap = new HashMap<Integer, DataFileTreeNode>();
+        childrenMap = new TreeMap<Integer, DataFileTreeNode>();
     }
 
     public DataFileTreeNode(final DataFileTreeNode parent, final DataType type, final int value) {
@@ -28,7 +27,7 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
         dataType = type;
         this.value = value;
         dataFile = null;
-        childrenMap = new HashMap<Integer, DataFileTreeNode>();
+        childrenMap = new TreeMap<Integer, DataFileTreeNode>();
     }
 
     public DataFileTreeNode(final DataFileTreeNode parent, final DataFile dataFile) {
@@ -46,15 +45,15 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
         return dataFile;
     }
 
-    public List<DataFileTreeNode> getChildrenList() {
-        if (lazyList == null) {
-            lazyList = new ArrayList<DataFileTreeNode>(childrenMap.values());
-            Collections.sort(lazyList);
-        }
-        return lazyList;
+    public Collection<DataFileTreeNode> getChildrenCollection() {
+        return childrenMap.values();
     }
 
-    public Map<Integer, DataFileTreeNode> getChildrenMap() {
+    public List<DataFileTreeNode> getChildrenList() {
+        return new ArrayList<DataFileTreeNode>(childrenMap.values());
+    }
+
+    public NavigableMap<Integer, DataFileTreeNode> getChildrenMap() {
         return childrenMap;
     }
 
@@ -64,14 +63,12 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
         } else {
             final DataFileTreeNode node = new DataFileTreeNode(this, type, value);
             childrenMap.put(value, node);
-            lazyList = null;
             return node;
         }
     }
 
     public void add(final DataFile dataFile) {
         childrenMap.put(childrenMap.size(), new DataFileTreeNode(this, dataFile));
-        lazyList = null;
     }
 
     @Override
@@ -86,7 +83,7 @@ public class DataFileTreeNode implements TreeNode, Comparable<DataFileTreeNode> 
 
     @Override
     public Enumeration<DataFileTreeNode> children() {
-        return Collections.enumeration(getChildrenList());
+        return Collections.enumeration(childrenMap.values());
     }
 
     @Override

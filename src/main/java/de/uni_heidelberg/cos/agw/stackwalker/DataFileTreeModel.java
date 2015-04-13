@@ -56,6 +56,10 @@ public class DataFileTreeModel extends DefaultTreeModel {
         currentParent.add(dataFile);
     }
 
+    public DataFileTreeNode getRoot() {
+        return rootNode;
+    }
+
     public DataFile get(final Map<DataType, Integer> values) {
         DataFileTreeNode current = rootNode;
         for (final DataType type : DataType.LIST) {
